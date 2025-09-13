@@ -1,0 +1,20 @@
+{
+  "name": "skunk1",
+  "version": "1.0.0",
+  "description": "A chrome extension to help you practice learning languages",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "skunk1"
+  },
+  "author": "almenon",
+  "license": "MIT",
+  "devDependencies": {
+    "chrome-types": "^0.1.375",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
