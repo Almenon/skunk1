@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { AddWordForm, WordPairList } from './components';
 import './App.css';
 
 interface WordReplacements {
@@ -11,8 +12,41 @@ function App() {
 
   useEffect(() => {
     // TODO: Load word pairs from storage (will be implemented in later tasks)
+    // For now, initialize with empty object
+    setWordPairs({});
     setLoading(false);
   }, []);
+
+  const handleAddWord = (original: string, replacement: string) => {
+    setWordPairs(prev => ({
+      ...prev,
+      [original]: replacement
+    }));
+  };
+
+  const handleEditWord = (oldOriginal: string, newOriginal: string, newReplacement: string) => {
+    setWordPairs(prev => {
+      const updated = { ...prev };
+      
+      // Remove old entry if original word changed
+      if (oldOriginal !== newOriginal) {
+        delete updated[oldOriginal];
+      }
+      
+      // Add/update with new values
+      updated[newOriginal] = newReplacement;
+      
+      return updated;
+    });
+  };
+
+  const handleDeleteWord = (original: string) => {
+    setWordPairs(prev => {
+      const updated = { ...prev };
+      delete updated[original];
+      return updated;
+    });
+  };
 
   if (loading) {
     return (
@@ -32,25 +66,19 @@ function App() {
       <main className="options-main">
         <section className="word-pairs-section">
           <h2>Current Word Pairs</h2>
-          {Object.keys(wordPairs).length === 0 ? (
-            <div className="empty-state">
-              <p>No word replacements configured yet.</p>
-              <p>Add your first word pair below to get started!</p>
-            </div>
-          ) : (
-            <div className="word-pairs-list">
-              {/* Word pairs list will be implemented in later tasks */}
-              <p>Word pairs will be displayed here.</p>
-            </div>
-          )}
+          <WordPairList
+            wordPairs={wordPairs}
+            onEditWord={handleEditWord}
+            onDeleteWord={handleDeleteWord}
+          />
         </section>
 
         <section className="add-word-section">
           <h2>Add New Word Pair</h2>
-          <div className="add-word-form">
-            {/* Add word form will be implemented in later tasks */}
-            <p>Add word form will be implemented here.</p>
-          </div>
+          <AddWordForm
+            onAddWord={handleAddWord}
+            existingWords={Object.keys(wordPairs)}
+          />
         </section>
       </main>
     </div>

@@ -1,0 +1,166 @@
+.word-pair-list {
+  width: 100%;
+}
+
+.word-pair-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px 4px 0 0;
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.header-original,
+.header-replacement,
+.header-actions {
+  text-align: left;
+}
+
+.header-actions {
+  text-align: center;
+  min-width: 120px;
+}
+
+.word-pair-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #dee2e6;
+  border-top: none;
+  align-items: center;
+  background-color: white;
+  transition: background-color 0.2s ease;
+}
+
+.word-pair-item:hover {
+  background-color: #f8f9fa;
+}
+
+.word-pair-item:last-child {
+  border-radius: 0 0 4px 4px;
+}
+
+.word-original,
+.word-replacement {
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 3px;
+  word-break: break-word;
+}
+
+.word-original {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+.word-replacement {
+  color: #28a745;
+  font-weight: 500;
+}
+
+.word-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.edit-button,
+.delete-button {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 3px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #666;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.empty-state p {
+  margin: 0.5rem 0;
+}
+
+.empty-state p:first-child {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .word-pair-header,
+  .word-pair-item {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .word-pair-header {
+    display: none;
+  }
+  
+  .word-pair-item {
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    border: 1px solid #dee2e6;
+  }
+  
+  .word-original,
+  .word-replacement {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .word-original::before {
+    content: "Original: ";
+    font-family: inherit;
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  .word-replacement::before {
+    content: "Replacement: ";
+    font-family: inherit;
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  .word-actions {
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+}
