@@ -1,10 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App.tsx';
-import './style.css';
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
+console.log('extension icon clicked!')
+if(document != null){
+  // @ts-ignore
+  if (chrome && chrome.runtime.openOptionsPage) {
+    // @ts-ignore
+    chrome.runtime.openOptionsPage();
+    // @ts-ignore
+  } else if (chrome) {
+    // @ts-ignore
+    window.open(chrome.runtime.getURL('options.html'));
+  }
+}
