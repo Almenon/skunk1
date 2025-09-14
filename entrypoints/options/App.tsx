@@ -134,6 +134,14 @@ function App() {
       )}
 
       <main className="options-main">
+        <section className="add-word-section">
+          <h2>Add New Word Pair</h2>
+          <AddWordForm
+            onAddWord={handleAddWord}
+            existingWords={Object.keys(wordPairs)}
+          />
+        </section>
+
         <section className="word-pairs-section">
           <div className="section-header">
             <h2>Current Word Pairs</h2>
@@ -148,14 +156,6 @@ function App() {
             wordPairs={wordPairs}
             onEditWord={handleEditWord}
             onDeleteWord={handleDeleteWord}
-          />
-        </section>
-
-        <section className="add-word-section">
-          <h2>Add New Word Pair</h2>
-          <AddWordForm
-            onAddWord={handleAddWord}
-            existingWords={Object.keys(wordPairs)}
           />
         </section>
       </main>
