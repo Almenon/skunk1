@@ -27,7 +27,7 @@ export function findMatch(node: Node, wordReplacements: WordReplacements): Match
         result.push(wordsSoFar);
       }
       result.push(word);
-      wordsSoFar = "";
+      wordsSoFar = " ";
     } else {
       wordsSoFar += word + " ";
     }
@@ -37,7 +37,7 @@ export function findMatch(node: Node, wordReplacements: WordReplacements): Match
     return null;
   }
 
-  if(wordsSoFar != ""){
+  if(wordsSoFar != "" && wordsSoFar != " "){
     result.push(wordsSoFar.slice(0,wordsSoFar.length-1))
   }
   

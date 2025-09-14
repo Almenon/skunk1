@@ -39,7 +39,7 @@ describe('word-replacer', () => {
       
       expect(result).not.toBeNull();
       expect(result!.node).toBe(node);
-      expect(result!.parts).toEqual(['hello ', 'robot', 'world']);
+      expect(result!.parts).toEqual(['hello ', 'robot', ' world']);
     });
 
     it('should find multiple word matches', () => {
@@ -47,7 +47,7 @@ describe('word-replacer', () => {
       const result = findMatch(node, wordReplacements);
       
       expect(result).not.toBeNull();
-      expect(result!.parts).toEqual(['the ', 'robot', 'and ', 'worker', 'are here']);
+      expect(result!.parts).toEqual(['the ', 'robot', ' and ', 'worker', ' are here']);
     });
 
     it('should handle text starting with a match', () => {
@@ -55,7 +55,7 @@ describe('word-replacer', () => {
       const result = findMatch(node, wordReplacements);
       
       expect(result).not.toBeNull();
-      expect(result!.parts).toEqual(['robot', 'is working']);
+      expect(result!.parts).toEqual(['robot', ' is working']);
     });
 
     it('should handle text ending with a match', () => {
