@@ -1,12 +1,9 @@
+import { browser } from 'wxt/browser';
+
 console.log('extension icon clicked!')
-if(document != null){
+if (browser && browser.runtime.openOptionsPage) {
+  browser.runtime.openOptionsPage();
+} else {
   // @ts-ignore
-  if (chrome && chrome.runtime.openOptionsPage) {
-    // @ts-ignore
-    chrome.runtime.openOptionsPage();
-    // @ts-ignore
-  } else if (chrome) {
-    // @ts-ignore
-    window.open(chrome.runtime.getURL('options.html'));
-  }
+  window.open(browser.runtime.getURL('options.html'));
 }
