@@ -2,44 +2,62 @@ export default defineContentScript({
   matches: ["*://*/*"],
   main() {
     console.log('Hello popsicles!');
-    const word_replacements = {
-      'robot': '机器人'
+    const word_replacements: {[key: string]: string} = {
+      'robot': '机器人',
+      'worker': '工人',
+      'workers': '工人',
+      'write': '写'
     }
-    const word_to_replace = 'robot'
     const iterationMax = 30000 // arbitrary, I just want to at least cover first page
 
-    function findMatchingNode(node: Node) {
-      if (node.textContent && node.textContent.includes(word_to_replace)) {
-        console.log(`found ${word_to_replace}`)
-        return node
+    /**
+     * Take a node and return the split version for processing later
+     * @returns null if no match in node
+     */
+    function findMatch(node: Node) {
+      if(node.textContent){
+        // todo split on all whitespace /\s+/
+        const words = node.textContent.split(" ")
+        const result: string[] = []
+        let wordsSoFar = ""
+        words.forEach((word)=>{
+          if(word in word_replacements){
+            result.push(wordsSoFar)
+            result.push(word)
+            wordsSoFar = ""
+          } else {
+            wordsSoFar += word + " "
+          }
+        })
+
+        if(result.length == 0){
+          return null
+        }
+        return [node, result]
       }
     }
 
-    function replaceTextInNode(node: Node) {
-      const textContent = node.textContent as string;
-
-      // Create a new paragraph element
+    function createReplacementElement(word_to_replace: string){
       const aElement = document.createElement('a');
       const word_replacement = word_replacements[word_to_replace]
       aElement.textContent = word_replacement;
       aElement.href = "https://www.dong-chinese.com/dictionary/search/" + word_replacement
+      return aElement
+    }
 
-      // Replace the text with HTML structure
+    function replaceTextInNode(match: [Node,string[]]) {
+      let node = match[0]
+
       const parent = node.parentNode;
       if (parent) {
-        const parts = textContent.split(word_to_replace);
-        console.log(parts)
-
-        // Remove the original text node
+        const parts = match[1]
         parent.removeChild(node);
-
-        // Add text parts and replacement elements
         for (let i = 0; i < parts.length; i++) {
-          if (parts[i]) {
-            parent.appendChild(document.createTextNode(parts[i]));
+          if (parts[i] in word_replacements) {
+            parent.appendChild(createReplacementElement(parts[i]));
           }
-          if (i < parts.length - 1) {
-            parent.appendChild(aElement.cloneNode(true));
+          else {
+            parent.appendChild(document.createTextNode(parts[i]));
           }
         }
       }
@@ -47,7 +65,7 @@ export default defineContentScript({
 
     let index = 0
     const body = document.querySelector("body")
-    const matchingNodes: Node[] = []
+    const matches: any[] = []
     if (body != null) {
       const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT)
       for (index = 0; walker.nextNode(); index++) {
@@ -56,8 +74,8 @@ export default defineContentScript({
           break
         };
 
-        let node = findMatchingNode(walker.currentNode)
-        if(node) matchingNodes.push(node)
+        let match = findMatch(walker.currentNode)
+        if(match) matches.push(match)
       }
     }
     else {
@@ -66,6 +84,7 @@ export default defineContentScript({
 
     console.log(`Finished scanning webpage. Scanned ${index} elements`);
     console.log('replacing target elements')
-    matchingNodes.forEach(replaceTextInNode)
+    console.log(matches)
+    matches.forEach(replaceTextInNode)
   },
 });
