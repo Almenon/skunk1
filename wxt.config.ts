@@ -6,4 +6,7 @@ export default defineConfig({
   webExt: {
     startUrls: ["https://www.npr.org/2025/09/11/nx-s1-5532095"],
   },
+  manifest: {
+    permissions: ['storage'],
+  },
 });
