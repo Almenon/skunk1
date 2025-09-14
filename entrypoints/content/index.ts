@@ -9,9 +9,6 @@ export default defineContentScript({
     const iterationMax = 30000 // arbitrary, I just want to at least cover first page
 
     function replaceTextInNode(node: Node) {
-      if(node.nodeType == Node.TEXT_NODE){
-        console.log('found text node')
-      }
       const textContent = node.textContent;
       if (textContent && textContent.includes(word_to_replace)) {
         console.log(`replacing ${word_to_replace} in ${node.nodeName}`)
@@ -19,15 +16,22 @@ export default defineContentScript({
       }
     }
 
-    const all = document.querySelectorAll("body *")
-    for (let index = 0; index < all.length; index++) {
-      if (index > iterationMax){
-        console.info("Scanning webpage but webpage is too big to scan everything efficiently. Exiting.")
-        break
-      };
+    const body = document.querySelector("body")
+    if(body != null){
+      const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT)
+      for (let index = 0; walker.nextNode(); index++) {
+        if (index > iterationMax){
+          console.info("Scanning webpage but webpage is too big to scan everything efficiently. Exiting.")
+          break
+        };
 
-      replaceTextInNode(all[index])
+        replaceTextInNode(walker.currentNode)
+      }
     }
+    else {
+      console.warn("document does not have a body. Exiting")
+    }
+
     console.log("Finished scanning webpage");
   },
 });
