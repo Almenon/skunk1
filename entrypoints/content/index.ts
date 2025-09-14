@@ -16,10 +16,11 @@ export default defineContentScript({
       }
     }
 
+    let index = 0
     const body = document.querySelector("body")
     if(body != null){
       const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT)
-      for (let index = 0; walker.nextNode(); index++) {
+      for (index = 0; walker.nextNode(); index++) {
         if (index > iterationMax){
           console.info("Scanning webpage but webpage is too big to scan everything efficiently. Exiting.")
           break
@@ -32,6 +33,6 @@ export default defineContentScript({
       console.warn("document does not have a body. Exiting")
     }
 
-    console.log("Finished scanning webpage");
+    console.log(`Finished scanning webpage. Scanned ${index} elements`);
   },
 });
