@@ -60,6 +60,8 @@ export function replaceTextInNode(match: MatchResult, wordReplacements: WordRepl
     parent.removeChild(node);
     for (let i = 0; i < parts.length; i++) {
       if (parts[i] in wordReplacements) {
+        console.log(`replacing ${parts[i]} with ${wordReplacements[parts[i]]}. At:`)
+        console.log(parent)
         parent.appendChild(createReplacementElement(parts[i], wordReplacements));
       } else {
         parent.appendChild(document.createTextNode(parts[i]));
