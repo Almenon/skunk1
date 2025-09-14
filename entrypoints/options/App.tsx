@@ -26,7 +26,7 @@ function App() {
     <div className="options-container">
       <header className="options-header">
         <h1>Word Replacement Settings</h1>
-        <p>Manage your word replacement pairs for enhanced browsing experience.</p>
+        <p>Manage your word replacement pairs</p>
       </header>
 
       <main className="options-main">
