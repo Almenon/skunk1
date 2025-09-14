@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import InlineEditableWord from './InlineEditableWord';
-import DeleteConfirmation from './DeleteConfirmation';
 import './WordPairList.css';
 
 interface WordReplacements {
@@ -14,7 +12,6 @@ interface WordPairListProps {
 }
 
 export default function WordPairList({ wordPairs, onEditWord, onDeleteWord }: WordPairListProps) {
-  const [deletingWord, setDeletingWord] = useState<string | null>(null);
 
   const sortedPairs = Object.entries(wordPairs).sort(([a], [b]) => 
     a.toLowerCase().localeCompare(b.toLowerCase())
@@ -27,21 +24,6 @@ export default function WordPairList({ wordPairs, onEditWord, onDeleteWord }: Wo
 
   const handleReplacementEdit = (original: string, newReplacement: string) => {
     onEditWord(original, original, newReplacement);
-  };
-
-  const handleDeleteStart = (original: string) => {
-    setDeletingWord(original);
-  };
-
-  const handleDeleteConfirm = () => {
-    if (deletingWord) {
-      onDeleteWord(deletingWord);
-      setDeletingWord(null);
-    }
-  };
-
-  const handleDeleteCancel = () => {
-    setDeletingWord(null);
   };
 
   if (sortedPairs.length === 0) {
@@ -77,7 +59,7 @@ export default function WordPairList({ wordPairs, onEditWord, onDeleteWord }: Wo
           />
           <div className="word-actions">
             <button 
-              onClick={() => handleDeleteStart(original)}
+              onClick={() => onDeleteWord(original)}
               className="delete-button"
               title="Delete word pair"
             >
@@ -86,15 +68,6 @@ export default function WordPairList({ wordPairs, onEditWord, onDeleteWord }: Wo
           </div>
         </div>
       ))}
-
-      {deletingWord && (
-        <DeleteConfirmation
-          original={deletingWord}
-          replacement={wordPairs[deletingWord]}
-          onConfirm={handleDeleteConfirm}
-          onCancel={handleDeleteCancel}
-        />
-      )}
     </div>
   );
 }
