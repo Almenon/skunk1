@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import EditWordForm from './EditWordForm';
+import InlineEditableWord from './InlineEditableWord';
 import DeleteConfirmation from './DeleteConfirmation';
 import './WordPairList.css';
 
@@ -14,24 +14,19 @@ interface WordPairListProps {
 }
 
 export default function WordPairList({ wordPairs, onEditWord, onDeleteWord }: WordPairListProps) {
-  const [editingWord, setEditingWord] = useState<string | null>(null);
   const [deletingWord, setDeletingWord] = useState<string | null>(null);
 
   const sortedPairs = Object.entries(wordPairs).sort(([a], [b]) => 
     a.toLowerCase().localeCompare(b.toLowerCase())
   );
 
-  const handleEditStart = (original: string) => {
-    setEditingWord(original);
+  const handleOriginalEdit = (oldOriginal: string, newOriginal: string) => {
+    const replacement = wordPairs[oldOriginal];
+    onEditWord(oldOriginal, newOriginal, replacement);
   };
 
-  const handleEditSave = (oldOriginal: string, newOriginal: string, newReplacement: string) => {
-    onEditWord(oldOriginal, newOriginal, newReplacement);
-    setEditingWord(null);
-  };
-
-  const handleEditCancel = () => {
-    setEditingWord(null);
+  const handleReplacementEdit = (original: string, newReplacement: string) => {
+    onEditWord(original, original, newReplacement);
   };
 
   const handleDeleteStart = (original: string) => {
@@ -68,36 +63,27 @@ export default function WordPairList({ wordPairs, onEditWord, onDeleteWord }: Wo
       
       {sortedPairs.map(([original, replacement]) => (
         <div key={original} className="word-pair-item">
-          {editingWord === original ? (
-            <EditWordForm
-              original={original}
-              replacement={replacement}
-              existingWords={Object.keys(wordPairs).filter(w => w !== original)}
-              onSave={handleEditSave}
-              onCancel={handleEditCancel}
-            />
-          ) : (
-            <>
-              <span className="word-original">{original}</span>
-              <span className="word-replacement">{replacement}</span>
-              <div className="word-actions">
-                <button 
-                  onClick={() => handleEditStart(original)}
-                  className="edit-button"
-                  title="Edit word pair"
-                >
-                  Edit
-                </button>
-                <button 
-                  onClick={() => handleDeleteStart(original)}
-                  className="delete-button"
-                  title="Delete word pair"
-                >
-                  Delete
-                </button>
-              </div>
-            </>
-          )}
+          <InlineEditableWord
+            value={original}
+            onSave={(newValue) => handleOriginalEdit(original, newValue)}
+            className="word-original"
+            placeholder="Original word"
+          />
+          <InlineEditableWord
+            value={replacement}
+            onSave={(newValue) => handleReplacementEdit(original, newValue)}
+            className="word-replacement"
+            placeholder="Replacement word"
+          />
+          <div className="word-actions">
+            <button 
+              onClick={() => handleDeleteStart(original)}
+              className="delete-button"
+              title="Delete word pair"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       ))}
 

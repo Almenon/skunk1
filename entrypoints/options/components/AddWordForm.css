@@ -7,6 +7,7 @@
   gap: 1rem;
   align-items: end;
   flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .form-group {
@@ -47,6 +48,7 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   white-space: nowrap;
+  margin-left: 1rem;
 }
 
 .add-button:hover:not(.disabled) {

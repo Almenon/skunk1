@@ -12,7 +12,7 @@ export default defineContentScript({
       try {
         const wordReplacements = await WordStorageService.getWordPairs();
         console.log('Loaded word replacements from storage:', wordReplacements);
-        
+
         const body = document.querySelector("body");
         if (body != null) {
           const result = scanAndReplaceWords(body, wordReplacements, iterationMax);
@@ -32,7 +32,7 @@ export default defineContentScript({
     try {
       const unwatch = WordStorageService.watchWordPairs(async (newValue, oldValue) => {
         console.log('Word replacements updated in storage:', { newValue, oldValue });
-        
+
         // Re-scan and replace words with updated dictionary
         // Note: This is a simple implementation that re-processes the entire page
         // A more sophisticated approach would track and update only changed elements

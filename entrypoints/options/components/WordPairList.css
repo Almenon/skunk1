@@ -23,7 +23,7 @@
 
 .header-actions {
   text-align: center;
-  min-width: 120px;
+  min-width: 80px;
 }
 
 .word-pair-item {
@@ -46,33 +46,12 @@
   border-radius: 0 0 4px 4px;
 }
 
-.word-original,
-.word-replacement {
-  font-family: 'Courier New', monospace;
-  font-size: 0.95rem;
-  padding: 0.25rem 0.5rem;
-  background-color: #f8f9fa;
-  border-radius: 3px;
-  word-break: break-word;
-}
-
-.word-original {
-  color: #dc3545;
-  font-weight: 500;
-}
-
-.word-replacement {
-  color: #28a745;
-  font-weight: 500;
-}
-
 .word-actions {
   display: flex;
   gap: 0.5rem;
   justify-content: center;
 }
 
-.edit-button,
 .delete-button {
   padding: 0.4rem 0.8rem;
   border: none;
@@ -81,19 +60,6 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-
-.edit-button {
-  background-color: #007bff;
-  color: white;
-}
-
-.edit-button:hover {
-  background-color: #0056b3;
-  transform: translateY(-1px);
-}
-
-.delete-button {
   background-color: #dc3545;
   color: white;
 }

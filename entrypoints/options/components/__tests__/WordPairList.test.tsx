@@ -59,7 +59,7 @@ describe('WordPairList', () => {
     expect(screen.getByText('Actions')).toBeInTheDocument();
   });
 
-  it('shows edit and delete buttons for each word pair', () => {
+  it('shows delete buttons for each word pair', () => {
     render(
       <WordPairList 
         wordPairs={sampleWordPairs} 
@@ -68,14 +68,12 @@ describe('WordPairList', () => {
       />
     );
     
-    const editButtons = screen.getAllByText('Edit');
     const deleteButtons = screen.getAllByText('Delete');
     
-    expect(editButtons).toHaveLength(3);
     expect(deleteButtons).toHaveLength(3);
   });
 
-  it('enters edit mode when edit button is clicked', () => {
+  it('allows inline editing when word is clicked', () => {
     render(
       <WordPairList 
         wordPairs={sampleWordPairs} 
@@ -84,12 +82,13 @@ describe('WordPairList', () => {
       />
     );
     
-    const editButtons = screen.getAllByText('Edit');
-    fireEvent.click(editButtons[0]); // Click edit for first item (apple)
+    const appleWord = screen.getByText('apple');
+    fireEvent.click(appleWord);
     
-    // Should show edit form inputs
-    const inputs = screen.getAllByDisplayValue('apple');
-    expect(inputs.length).toBeGreaterThan(0);
+    // Should show input field for editing
+    const input = screen.getByDisplayValue('apple');
+    expect(input).toBeInTheDocument();
+    expect(input.tagName).toBe('INPUT');
   });
 
   it('shows delete confirmation when delete button is clicked', () => {
