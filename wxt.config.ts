@@ -4,6 +4,6 @@ import { defineConfig } from 'wxt';
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   webExt: {
-    startUrls: ["https://wxt.dev"],
+    startUrls: ["https://www.npr.org/2025/09/11/nx-s1-5532095"],
   },
 });
