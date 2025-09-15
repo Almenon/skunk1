@@ -45,6 +45,7 @@ function App() {
     try {
       setOperationInProgress(true);
       setError(null);
+      console.log(`saving ${original}: ${replacement}`)
       await WordStorageService.addWordPair(original, replacement);
       // The storage watcher will update the state automatically
     } catch (err) {
