@@ -25,12 +25,6 @@ export function validateWord(word: string): ValidationResult {
     return { isValid: false, error: 'Word cannot exceed 100 characters' };
   }
 
-  // Check for potentially problematic characters that could break DOM manipulation
-  const problematicChars = /[<>]/;
-  if (problematicChars.test(trimmedWord)) {
-    return { isValid: false, error: 'Word cannot contain < or > characters' };
-  }
-
   return { isValid: true };
 }
 
