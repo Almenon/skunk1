@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import './AddWordForm.css';
 
 interface AddWordFormProps {
@@ -10,6 +10,7 @@ export default function AddWordForm({ onAddWord, existingWords }: AddWordFormPro
   const [original, setOriginal] = useState('');
   const [replacement, setReplacement] = useState('');
   const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
+  const originalInputRef = useRef<HTMLInputElement>(null);
 
   const trimmedOriginal = original.trim();
   const trimmedReplacement = replacement.trim();
@@ -34,6 +35,9 @@ export default function AddWordForm({ onAddWord, existingWords }: AddWordFormPro
     setOriginal('');
     setReplacement('');
     setShowDuplicateWarning(false);
+    
+    // Focus back to the original word input for easy consecutive additions
+    originalInputRef.current?.focus();
   };
 
   const handleConfirmOverwrite = () => {
@@ -51,6 +55,7 @@ export default function AddWordForm({ onAddWord, existingWords }: AddWordFormPro
           <div className="form-group">
             <label htmlFor="original-word">Original Word:</label>
             <input
+              ref={originalInputRef}
               id="original-word"
               type="text"
               value={original}
