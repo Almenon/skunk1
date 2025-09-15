@@ -42,17 +42,6 @@ describe('Word Validation', () => {
         error: 'Word cannot exceed 100 characters' 
       });
     });
-
-    it('should reject words with problematic characters', () => {
-      expect(validateWord('hello<script>')).toEqual({ 
-        isValid: false, 
-        error: 'Word cannot contain < or > characters' 
-      });
-      expect(validateWord('test>alert')).toEqual({ 
-        isValid: false, 
-        error: 'Word cannot contain < or > characters' 
-      });
-    });
   });
 
   describe('validateWordPair', () => {

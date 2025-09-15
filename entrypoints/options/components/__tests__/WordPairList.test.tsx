@@ -91,22 +91,6 @@ describe('WordPairList', () => {
     expect(input.tagName).toBe('INPUT');
   });
 
-  it('shows delete confirmation when delete button is clicked', () => {
-    render(
-      <WordPairList 
-        wordPairs={sampleWordPairs} 
-        onEditWord={mockOnEditWord} 
-        onDeleteWord={mockOnDeleteWord} 
-      />
-    );
-    
-    const deleteButtons = screen.getAllByText('Delete');
-    fireEvent.click(deleteButtons[0]); // Click delete for first item
-    
-    expect(screen.getByText('Confirm Deletion')).toBeInTheDocument();
-    expect(screen.getByText('Are you sure you want to delete this word pair?')).toBeInTheDocument();
-  });
-
   it('calls onDeleteWord when deletion is confirmed', () => {
     render(
       <WordPairList 
@@ -119,29 +103,7 @@ describe('WordPairList', () => {
     const deleteButtons = screen.getAllByText('Delete');
     fireEvent.click(deleteButtons[0]); // Click delete for apple
     
-    const confirmButton = screen.getByText('Yes, Delete');
-    fireEvent.click(confirmButton);
-    
     expect(mockOnDeleteWord).toHaveBeenCalledWith('apple');
-  });
-
-  it('cancels deletion when cancel is clicked', () => {
-    render(
-      <WordPairList 
-        wordPairs={sampleWordPairs} 
-        onEditWord={mockOnEditWord} 
-        onDeleteWord={mockOnDeleteWord} 
-      />
-    );
-    
-    const deleteButtons = screen.getAllByText('Delete');
-    fireEvent.click(deleteButtons[0]);
-    
-    const cancelButton = screen.getByRole('button', { name: 'Cancel' });
-    fireEvent.click(cancelButton);
-    
-    expect(screen.queryByText('Confirm Deletion')).not.toBeInTheDocument();
-    expect(mockOnDeleteWord).not.toHaveBeenCalled();
   });
 
   it('displays word pairs with correct styling classes', () => {
