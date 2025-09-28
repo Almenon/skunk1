@@ -129,26 +129,25 @@ describe('word-replacer', () => {
     });
 
     it('should make sure replacement is in correct order (test1)', () => {
-      const frag = JSDOM.fragment(`<p>Clanker, rust bucket, tinskin —<a href="https://www.npr.org/2025/08/06/nx-s1-5493360/clanker-robot-slur-star-wars" target="_blank"> <u>slang words used to put down robots</u></a> are on the rise.</p>`)
-      const p = frag.firstChild
+      document.body.innerHTML = '<p>Clanker, rust bucket, tinskin —<a href="https://www.npr.org/2025/08/06/nx-s1-5493360/clanker-robot-slur-star-wars" target="_blank"> <u>slang words used to put down robots</u></a> are on the rise.</p>'
       const match: MatchResult = {
-        node: p?.firstChild!,
-        replacedSplitText: ['Clanker, rust ', '桶', ', tinskin —']
+        node: document.body.firstChild!,
+        replacedSplitText: ['Clanker, rust ', 'bucket', ', tinskin — slang words used to put down robots are on the rise.']
       };
 
       replaceTextInNode(match, replacementTargets);
-      expect(p?.textContent).toBe('Clanker, rust 桶, tinskin — slang words used to put down robots are on the rise.')
+      expect(document.body.textContent).toBe('Clanker, rust 桶, tinskin — slang words used to put down robots are on the rise.')
     });
 
     it('should make sure replacement is in correct order (test2)', () => {
-      const frag = JSDOM.fragment(`<body><div><a>a</a><p>b</p><div>c</div>bucket</div></body>`)
+      document.body.innerHTML = '<div><a>a</a><p>b</p><div>c</div>bucket</div>'
       const match: MatchResult = {
-        node: frag.firstChild!,
+        node: document.body.firstChild!,
         replacedSplitText: ['abc', 'bucket']
       };
 
       replaceTextInNode(match, replacementTargets);
-      expect(frag?.textContent).toBe('abc桶')
+      expect(document.body?.textContent).toBe('abc桶')
     });
   });
 
