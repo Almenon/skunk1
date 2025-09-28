@@ -15,8 +15,9 @@ export default defineContentScript({
 
         const body = document.querySelector("body");
         if (body != null) {
+          let startTime = performance.now()
           const result = scanAndReplaceWords(body, wordReplacements, iterationMax);
-          console.log(`Word replacement completed: ${result.matchCount} matches found in ${result.scannedCount} scanned elements`);
+          console.log(`Word replacement completed: ${result.matchCount} matches found in ${performance.now()-startTime}ms`);
         } else {
           console.warn("document does not have a body. Exiting");
         }
