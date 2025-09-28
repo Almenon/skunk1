@@ -49,6 +49,7 @@
   transition: background-color 0.2s ease;
   white-space: nowrap;
   margin-left: 1rem;
+  margin-bottom: .1rem;
 }
 
 .add-button:hover:not(.disabled) {
@@ -113,11 +114,11 @@
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .form-group {
     min-width: unset;
   }
-  
+
   .add-button {
     width: 100%;
   }
