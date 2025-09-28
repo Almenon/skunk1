@@ -27,7 +27,6 @@ export function replaceTargetsInText(node: Node, replacementTargets: {[key:strin
       }
   }
   if(matches.length == 0) return null
-  console.log(`Matches for ${node.textContent}: ${matches}`)
 
   // sort so replacement targets are in ascending order of start position
   // [0..1] [2..3] [5..9] and so on
@@ -79,7 +78,6 @@ export function replaceTextInNode(match: MatchResult, wordReplacements: Replacem
   const parent = node.parentNode;
   
   if (parent) {
-    console.log(node.textContent)
     const nextSibling = node.nextSibling;
     parent.removeChild(node);
     
