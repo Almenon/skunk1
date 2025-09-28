@@ -54,7 +54,7 @@ describe('WordPairList', () => {
       />
     );
     
-    expect(screen.getByText('Original Word')).toBeInTheDocument();
+    expect(screen.getByText('Original Word / Phrase')).toBeInTheDocument();
     expect(screen.getByText('Replacement Word')).toBeInTheDocument();
     expect(screen.getByText('Actions')).toBeInTheDocument();
   });
