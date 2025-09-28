@@ -109,6 +109,7 @@ export function scanAndReplaceWords(
   const matches: MatchResult[] = [];
   let index = 0;
   
+  const startTime = performance.now()
   const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT);
   
   for (index = 0; walker.nextNode(); index++) {
@@ -123,11 +124,12 @@ export function scanAndReplaceWords(
     }
   }
 
-  console.log(`Finished scanning webpage. Scanned ${index} elements`);
-  console.log('replacing target elements');
-  console.log(matches);
+  console.log(`Found ${matches.length} matches in ${performance.now()-startTime}ms`);
+  console.log('Replacing target elements: ', matches);
   
+  const startTime2 = performance.now()
   matches.forEach(match => replaceTextInNode(match, wordReplacements));
+  console.log(`Replaced ${matches.length} matches in ${performance.now()-startTime2}ms`);
   
   return { scannedCount: index, matchCount: matches.length };
 }
