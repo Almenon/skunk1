@@ -1,15 +1,16 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import {JSDOM} from 'jsdom'
 import {
-  findMatch,
+  replaceTargetsInText,
   createReplacementElement,
   replaceTextInNode,
   scanAndReplaceWords,
-  WordReplacements,
+  ReplacementTargets,
   MatchResult
 } from '../word-replacer';
 
 describe('word-replacer', () => {
-  const wordReplacements: WordReplacements = {
+  const replacementTargets: ReplacementTargets = {
     'robot': '机器人',
     'worker': '工人',
     'workers': '工人',
@@ -23,53 +24,53 @@ describe('word-replacer', () => {
   describe('findMatch', () => {
     it('should return null for node without text content', () => {
       const node = document.createElement('div');
-      const result = findMatch(node, wordReplacements);
+      const result = replaceTargetsInText(node, replacementTargets);
       expect(result).toBeNull();
     });
 
     it('should return null when no words match', () => {
       const node = document.createTextNode('hello world test');
-      const result = findMatch(node, wordReplacements);
+      const result = replaceTargetsInText(node, replacementTargets);
       expect(result).toBeNull();
     });
 
     it('should find single word match', () => {
       const node = document.createTextNode('hello robot world');
-      const result = findMatch(node, wordReplacements);
+      const result = replaceTargetsInText(node, replacementTargets);
       
       expect(result).not.toBeNull();
       expect(result!.node).toBe(node);
-      expect(result!.parts).toEqual(['hello ', 'robot', ' world']);
+      expect(result!.replacedSplitText).toEqual(['hello ', 'robot', ' world']);
     });
 
     it('should find multiple word matches', () => {
       const node = document.createTextNode('the robot and worker are here');
-      const result = findMatch(node, wordReplacements);
+      const result = replaceTargetsInText(node, replacementTargets);
       
       expect(result).not.toBeNull();
-      expect(result!.parts).toEqual(['the ', 'robot', ' and ', 'worker', ' are here']);
+      expect(result!.replacedSplitText).toEqual(['the ', 'robot', ' and ', 'worker', ' are here']);
     });
 
     it('should handle text starting with a match', () => {
       const node = document.createTextNode('robot is working');
-      const result = findMatch(node, wordReplacements);
+      const result = replaceTargetsInText(node, replacementTargets);
       
       expect(result).not.toBeNull();
-      expect(result!.parts).toEqual(['robot', ' is working']);
+      expect(result!.replacedSplitText).toEqual(['robot', ' is working']);
     });
 
     it('should handle text ending with a match', () => {
       const node = document.createTextNode('hello robot');
-      const result = findMatch(node, wordReplacements);
+      const result = replaceTargetsInText(node, replacementTargets);
       
       expect(result).not.toBeNull();
-      expect(result!.parts).toEqual(['hello ', 'robot']);
+      expect(result!.replacedSplitText).toEqual(['hello ', 'robot']);
     });
   });
 
   describe('createReplacementElement', () => {
     it('should create anchor element with correct text and href', () => {
-      const element = createReplacementElement('robot', wordReplacements);
+      const element = createReplacementElement('robot', replacementTargets);
       
       expect(element.tagName).toBe('A');
       expect(element.textContent).toBe('机器人');
@@ -79,7 +80,7 @@ describe('word-replacer', () => {
     });
 
     it('should handle different words', () => {
-      const element = createReplacementElement('worker', wordReplacements);
+      const element = createReplacementElement('worker', replacementTargets);
       
       expect(element.textContent).toBe('工人');
       expect(element.href).toContain('https://www.dong-chinese.com/dictionary/search/');
@@ -97,10 +98,10 @@ describe('word-replacer', () => {
 
       const match: MatchResult = {
         node: textNode,
-        parts: ['hello ', 'robot', ' world ']
+        replacedSplitText: ['hello ', 'robot', ' world ']
       };
 
-      replaceTextInNode(match, wordReplacements);
+      replaceTextInNode(match, replacementTargets);
 
       expect(container.children.length).toBe(1);
       expect(container.children[0].tagName).toBe('A');
@@ -115,10 +116,10 @@ describe('word-replacer', () => {
 
       const match: MatchResult = {
         node: textNode,
-        parts: ['', 'robot', ' and ', 'worker', ' ']
+        replacedSplitText: ['', 'robot', ' and ', 'worker', ' ']
       };
 
-      replaceTextInNode(match, wordReplacements);
+      replaceTextInNode(match, replacementTargets);
 
       const anchors = container.querySelectorAll('a');
       expect(anchors.length).toBe(2);
@@ -126,15 +127,16 @@ describe('word-replacer', () => {
       expect(anchors[1].textContent).toBe('工人');
     });
 
-    it('should handle node without parent gracefully', () => {
-      const textNode = document.createTextNode('hello robot');
+    it('should make sure replacement is in correct order', () => {
+      const frag = JSDOM.fragment(`<p>Clanker, rust bucket, tinskin —<a href="https://www.npr.org/2025/08/06/nx-s1-5493360/clanker-robot-slur-star-wars" target="_blank"> <u>slang words used to put down robots</u></a> are on the rise.</p>`)
+      const p = frag.firstChild
       const match: MatchResult = {
-        node: textNode,
-        parts: ['hello ', 'robot']
+        node: p?.firstChild!,
+        replacedSplitText: ['Clanker, rust ', 'bucket', ', tinskin —']
       };
 
-      // Should not throw error
-      expect(() => replaceTextInNode(match, wordReplacements)).not.toThrow();
+      replaceTextInNode(match, replacementTargets);
+      expect(p?.textContent).toBe('Clanker, rust bucket, tinskin — slang words used to put down robots are on the rise.')
     });
   });
 
@@ -142,7 +144,7 @@ describe('word-replacer', () => {
     it('should scan and replace words in simple text', () => {
       document.body.innerHTML = '<p>The robot is working</p>';
       
-      const result = scanAndReplaceWords(document.body, wordReplacements);
+      const result = scanAndReplaceWords(document.body, replacementTargets);
       
       expect(result.scannedCount).toBeGreaterThan(0);
       expect(result.matchCount).toBe(1);
@@ -160,7 +162,7 @@ describe('word-replacer', () => {
         </div>
       `;
       
-      const result = scanAndReplaceWords(document.body, wordReplacements);
+      const result = scanAndReplaceWords(document.body, replacementTargets);
       
       expect(result.matchCount).toBe(2);
       
@@ -180,7 +182,7 @@ describe('word-replacer', () => {
       }
       document.body.appendChild(container);
       
-      const result = scanAndReplaceWords(document.body, wordReplacements, 50);
+      const result = scanAndReplaceWords(document.body, replacementTargets, 50);
       
       expect(result.scannedCount).toBeLessThanOrEqual(51);
     });
@@ -188,7 +190,7 @@ describe('word-replacer', () => {
     it('should handle empty body', () => {
       document.body.innerHTML = '';
       
-      const result = scanAndReplaceWords(document.body, wordReplacements);
+      const result = scanAndReplaceWords(document.body, replacementTargets);
       
       expect(result.scannedCount).toBe(0);
       expect(result.matchCount).toBe(0);
@@ -201,7 +203,7 @@ describe('word-replacer', () => {
         </div>
       `;
       
-      const result = scanAndReplaceWords(document.body, wordReplacements);
+      const result = scanAndReplaceWords(document.body, replacementTargets);
       
       expect(result.matchCount).toBe(2);
       
@@ -212,7 +214,7 @@ describe('word-replacer', () => {
     it('should not modify non-matching text', () => {
       document.body.innerHTML = '<p>Hello world, this is a test</p>';
       
-      const result = scanAndReplaceWords(document.body, wordReplacements);
+      const result = scanAndReplaceWords(document.body, replacementTargets);
       
       expect(result.matchCount).toBe(0);
       expect(document.querySelectorAll('a').length).toBe(0);
