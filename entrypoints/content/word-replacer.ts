@@ -80,13 +80,22 @@ export function replaceTextInNode(match: MatchResult, wordReplacements: Replacem
   
   if (parent) {
     console.log(node.textContent)
+    const nextSibling = node.nextSibling;
     parent.removeChild(node);
+    
     for (let i = 0; i < parts.length; i++) {
+      let newNode: Node;
       if (parts[i] in wordReplacements) {
         console.log(`replacing ${parts[i]} with ${wordReplacements[parts[i]]}. At:`, parent)
-        parent.appendChild(createReplacementElement(parts[i], wordReplacements));
+        newNode = createReplacementElement(parts[i], wordReplacements);
       } else {
-        parent.appendChild(document.createTextNode(parts[i]));
+        newNode = document.createTextNode(parts[i]);
+      }
+      
+      if (nextSibling) {
+        parent.insertBefore(newNode, nextSibling);
+      } else {
+        parent.appendChild(newNode);
       }
     }
   }
