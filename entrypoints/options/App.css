@@ -42,7 +42,6 @@
 .add-word-section h2 {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
-  color: #2c3e50;
   border-bottom: 1px solid #dee2e6;
   padding-bottom: 0.5rem;
 }
@@ -146,9 +145,6 @@
 
 .section-header h2 {
   margin: 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #dee2e6;
-  flex: 1;
 }
 
 .operation-indicator {
