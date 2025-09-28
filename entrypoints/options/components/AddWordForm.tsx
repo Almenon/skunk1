@@ -53,7 +53,7 @@ export default function AddWordForm({ onAddWord, existingWords }: AddWordFormPro
       <form onSubmit={handleSubmit}>
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="original-word">Original Word:</label>
+            <label htmlFor="original-word">Original Word / Phrase:</label>
             <input
               ref={originalInputRef}
               id="original-word"
