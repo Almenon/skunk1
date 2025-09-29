@@ -10,27 +10,24 @@ export interface MatchResult {
 
 /**
  * Replaces the targets in the node text. The node will be unchanged, 
- * the replacement is returned as a seperate list.
- * For example, ["Hello I am bob"] -> ["你好", "I am bob"]
+ * the replacement is returned as a separate list.
  * @returns null if no match in node.
  */
-export function replaceTargetsInText(node: Node, replacementTargets: {[key:string]: string}): MatchResult | null {
-  if (!node.textContent?.trim()) {
+export function replaceTargetsInText(node: Node, replacementTargets: ReplacementTargets): MatchResult | null {
+  const textContent = node.textContent
+  if (!textContent?.trim()) {
     return null;
   }
 
-  const matches: RegExpExecArray[] = []
+  // Find all matches for all targets
+  const matches: RegExpExecArray[] = [];
   for(const target in replacementTargets){
-      let replacementBetweenWordBoundaries = new RegExp(`\\b${target}\\b`, 'g')
-      for(const match of node.textContent.matchAll(replacementBetweenWordBoundaries)){
-          matches.push(match)
-      }
+    const replacementBetweenWordBoundaries = new RegExp(`\\b${target}\\b`, 'g');
+    matches.push(...textContent.matchAll(replacementBetweenWordBoundaries));
   }
   if(matches.length == 0) return null
 
-  // sort so replacement targets are in ascending order of start position
-  // [0..1] [2..3] [5..9] and so on
-  // if two targets start at same index, longest one comes first
+  // Sort matches by position (ascending), then by length (descending) for overlaps
   matches.sort((matchA, matchB) => {
       const result = matchA.index - matchB.index
       if(result == 0) {
@@ -39,27 +36,25 @@ export function replaceTargetsInText(node: Node, replacementTargets: {[key:strin
       return result
   })
 
-  // split up text
-  let index = 0
+  // Split text around matches, avoiding overlaps
+  let index = 0;
   const result: string[] = [];
   for (const match of matches) {
-      if(match.index < index){
-          // replacementTarget is overlapping or inside previous replacementTarget
-          // in which case we skip, (we can't replace an overlap)
-          continue
-      }
-      // put non-match text in result
-      if(index != match.index){
-          result.push(node.textContent.slice(index, match.index))
-      }
-      // put text in result
-      result.push(match[0])
-      index = match.index + match[0].length
+    if(match.index < index) continue; // Skip overlapping matches
+
+    // Add text before match
+    if(index !== match.index){
+      result.push(textContent.slice(index, match.index))
+    }
+
+    // Add the matched text
+    result.push(match[0]);
+    index = match.index + match[0].length;
   }
 
-  // there may be leftover text at the end, make sure that doesn't get missed
-  if(index != node.textContent.length){
-      result.push(node.textContent.slice(index, node.textContent.length))
+  // Add remaining text
+  if (index < textContent.length) {
+    result.push(textContent.slice(index));
   }
   
   return { node, replacedSplitText: result };

@@ -30,67 +30,49 @@ function App() {
 
   // Set up real-time storage synchronization
   useEffect(() => {
-    const unwatch = WordStorageService.watchWordPairs((newValue, oldValue) => {
-      // Only update if the change came from outside this component
-      // (to avoid infinite loops when this component makes changes)
-      if (JSON.stringify(newValue) !== JSON.stringify(wordPairs)) {
-        setWordPairs(newValue);
-      }
+    return WordStorageService.watchWordPairs((newValue) => {
+      setWordPairs(newValue);
     });
-
-    return unwatch;
   }, [wordPairs]);
 
-  const handleAddWord = useCallback(async (original: string, replacement: string) => {
+  // Generic handler for all storage operations
+  const handleStorageOperation = useCallback(async (operation: () => Promise<void>, operationName: string) => {
     try {
       setOperationInProgress(true);
       setError(null);
-      console.log(`saving ${original}: ${replacement}`)
-      await WordStorageService.addWordPair(original, replacement);
-      // The storage watcher will update the state automatically
+      await operation();
     } catch (err) {
-      console.error('Failed to add word pair:', err);
-      setError(err instanceof Error ? err.message : 'Failed to add word pair');
+      console.error(`Failed to ${operationName}:`, err);
+      setError(err instanceof Error ? err.message : `Failed to ${operationName}`);
     } finally {
       setOperationInProgress(false);
     }
   }, []);
 
-  const handleEditWord = useCallback(async (oldOriginal: string, newOriginal: string, newReplacement: string) => {
-    try {
-      setOperationInProgress(true);
-      setError(null);
+  const handleAddWord = useCallback((original: string, replacement: string) => {
+    return handleStorageOperation(
+      () => WordStorageService.addWordPair(original, replacement),
+      'add word pair'
+    );
+  }, [handleStorageOperation]);
 
-      // If the original word changed, we need to delete the old one and add the new one
+  const handleEditWord = useCallback((oldOriginal: string, newOriginal: string, newReplacement: string) => {
+    return handleStorageOperation(async () => {
       if (oldOriginal !== newOriginal) {
         await WordStorageService.deleteWordPair(oldOriginal);
         await WordStorageService.addWordPair(newOriginal, newReplacement);
       } else {
-        // Just update the replacement
         await WordStorageService.updateWordPair(oldOriginal, newReplacement);
       }
-      // The storage watcher will update the state automatically
-    } catch (err) {
-      console.error('Failed to edit word pair:', err);
-      setError(err instanceof Error ? err.message : 'Failed to edit word pair');
-    } finally {
-      setOperationInProgress(false);
-    }
-  }, []);
+    }, 'edit word pair');
+  }, [handleStorageOperation]);
 
-  const handleDeleteWord = useCallback(async (original: string) => {
-    try {
-      setOperationInProgress(true);
-      setError(null);
-      await WordStorageService.deleteWordPair(original);
-      // The storage watcher will update the state automatically
-    } catch (err) {
-      console.error('Failed to delete word pair:', err);
-      setError(err instanceof Error ? err.message : 'Failed to delete word pair');
-    } finally {
-      setOperationInProgress(false);
-    }
-  }, []);
+  const handleDeleteWord = useCallback((original: string) => {
+    return handleStorageOperation(
+      () => WordStorageService.deleteWordPair(original),
+      'delete word pair'
+    );
+  }, [handleStorageOperation]);
 
   // Clear error after a delay
   useEffect(() => {
