@@ -19,7 +19,7 @@ export default function AddWordForm({ onAddWord, existingWords }: AddWordFormPro
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!isFormValid) return;
 
     if (isDuplicate) {
@@ -35,7 +35,7 @@ export default function AddWordForm({ onAddWord, existingWords }: AddWordFormPro
     setOriginal('');
     setReplacement('');
     setShowDuplicateWarning(false);
-    
+
     // Focus back to the original word input for easy consecutive additions
     originalInputRef.current?.focus();
   };
@@ -64,7 +64,7 @@ export default function AddWordForm({ onAddWord, existingWords }: AddWordFormPro
               maxLength={100}
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="replacement-word">Replacement Word</label>
             <input
@@ -76,9 +76,9 @@ export default function AddWordForm({ onAddWord, existingWords }: AddWordFormPro
               maxLength={100}
             />
           </div>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             className={`add-button ${!isFormValid ? 'disabled' : ''}`}
             disabled={!isFormValid}
           >

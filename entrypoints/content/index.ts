@@ -10,7 +10,7 @@ export default defineContentScript({
     async function performWordReplacement() {
       const wordReplacements = await WordStorageService.getWordPairs();
       const body = document.body;
-      
+
       if (!body) {
         console.warn("Document has no body. Exiting");
         return;
@@ -18,7 +18,7 @@ export default defineContentScript({
 
       const startTime = performance.now();
       const result = scanAndReplaceWords(body, wordReplacements, ITERATION_MAX);
-      console.log(`Word replacement completed: ${result.matchCount} matches found in ${performance.now()-startTime}ms`);
+      console.log(`Word replacement completed: ${result.matchCount} matches found in ${performance.now() - startTime}ms`);
     }
 
     // Initial replacement

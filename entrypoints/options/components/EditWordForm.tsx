@@ -9,12 +9,12 @@ interface EditWordFormProps {
   onCancel: () => void;
 }
 
-export default function EditWordForm({ 
-  original, 
-  replacement, 
-  existingWords, 
-  onSave, 
-  onCancel 
+export default function EditWordForm({
+  original,
+  replacement,
+  existingWords,
+  onSave,
+  onCancel
 }: EditWordFormProps) {
   const [newOriginal, setNewOriginal] = useState(original);
   const [newReplacement, setNewReplacement] = useState(replacement);
@@ -37,7 +37,7 @@ export default function EditWordForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!isFormValid || !hasChanges) return;
 
     if (isDuplicate) {
@@ -93,17 +93,17 @@ export default function EditWordForm({
             className="edit-input replacement-input"
           />
         </div>
-        
+
         <div className="edit-actions">
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className={`save-button ${(!isFormValid || !hasChanges) ? 'disabled' : ''}`}
             disabled={!isFormValid || !hasChanges}
           >
             Save
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={onCancel}
             className="cancel-button"
           >

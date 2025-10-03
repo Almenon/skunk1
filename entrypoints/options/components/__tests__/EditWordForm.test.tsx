@@ -22,10 +22,10 @@ describe('EditWordForm', () => {
         onCancel={mockOnCancel}
       />
     );
-    
+
     const originalInput = screen.getByDisplayValue('test');
     const replacementInput = screen.getByDisplayValue('prueba');
-    
+
     expect(originalInput).toBeInTheDocument();
     expect(replacementInput).toBeInTheDocument();
   });
@@ -40,7 +40,7 @@ describe('EditWordForm', () => {
         onCancel={mockOnCancel}
       />
     );
-    
+
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
   });
@@ -55,7 +55,7 @@ describe('EditWordForm', () => {
         onCancel={mockOnCancel}
       />
     );
-    
+
     const saveButton = screen.getByRole('button', { name: 'Save' });
     expect(saveButton).toBeDisabled();
     expect(saveButton).toHaveClass('disabled');
@@ -71,12 +71,12 @@ describe('EditWordForm', () => {
         onCancel={mockOnCancel}
       />
     );
-    
+
     const originalInput = screen.getByDisplayValue('test');
     const saveButton = screen.getByRole('button', { name: 'Save' });
-    
+
     fireEvent.change(originalInput, { target: { value: 'testing' } });
-    
+
     expect(saveButton).not.toBeDisabled();
     expect(saveButton).not.toHaveClass('disabled');
   });
@@ -91,12 +91,12 @@ describe('EditWordForm', () => {
         onCancel={mockOnCancel}
       />
     );
-    
+
     const originalInput = screen.getByDisplayValue('test');
     const saveButton = screen.getByRole('button', { name: 'Save' });
-    
+
     fireEvent.change(originalInput, { target: { value: '' } });
-    
+
     expect(saveButton).toBeDisabled();
     expect(saveButton).toHaveClass('disabled');
   });
@@ -111,15 +111,15 @@ describe('EditWordForm', () => {
         onCancel={mockOnCancel}
       />
     );
-    
+
     const originalInput = screen.getByDisplayValue('test');
     const replacementInput = screen.getByDisplayValue('prueba');
     const saveButton = screen.getByRole('button', { name: 'Save' });
-    
+
     fireEvent.change(originalInput, { target: { value: '  testing  ' } });
     fireEvent.change(replacementInput, { target: { value: '  probando  ' } });
     fireEvent.click(saveButton);
-    
+
     expect(mockOnSave).toHaveBeenCalledWith('test', 'testing', 'probando');
   });
 
@@ -133,10 +133,10 @@ describe('EditWordForm', () => {
         onCancel={mockOnCancel}
       />
     );
-    
+
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
     fireEvent.click(cancelButton);
-    
+
     expect(mockOnCancel).toHaveBeenCalled();
   });
 
@@ -150,10 +150,10 @@ describe('EditWordForm', () => {
         onCancel={mockOnCancel}
       />
     );
-    
+
     const originalInput = screen.getByDisplayValue('test');
     fireEvent.keyDown(originalInput, { key: 'Escape' });
-    
+
     expect(mockOnCancel).toHaveBeenCalled();
   });
 
@@ -167,11 +167,11 @@ describe('EditWordForm', () => {
         onCancel={mockOnCancel}
       />
     );
-    
+
     const originalInput = screen.getByDisplayValue('test');
     fireEvent.change(originalInput, { target: { value: 'testing' } });
     fireEvent.keyDown(originalInput, { key: 'Enter' });
-    
+
     expect(mockOnSave).toHaveBeenCalledWith('test', 'testing', 'prueba');
   });
 
@@ -185,13 +185,13 @@ describe('EditWordForm', () => {
         onCancel={mockOnCancel}
       />
     );
-    
+
     const originalInput = screen.getByDisplayValue('test');
     const saveButton = screen.getByRole('button', { name: 'Save' });
-    
+
     fireEvent.change(originalInput, { target: { value: 'hello' } });
     fireEvent.click(saveButton);
-    
+
     expect(screen.getByText(/already exists/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Yes, Overwrite' })).toBeInTheDocument();
     expect(mockOnSave).not.toHaveBeenCalled();
@@ -207,16 +207,16 @@ describe('EditWordForm', () => {
         onCancel={mockOnCancel}
       />
     );
-    
+
     const originalInput = screen.getByDisplayValue('test');
     const saveButton = screen.getByRole('button', { name: 'Save' });
-    
+
     fireEvent.change(originalInput, { target: { value: 'hello' } });
     fireEvent.click(saveButton);
-    
+
     const overwriteButton = screen.getByRole('button', { name: 'Yes, Overwrite' });
     fireEvent.click(overwriteButton);
-    
+
     expect(mockOnSave).toHaveBeenCalledWith('test', 'hello', 'prueba');
   });
 
@@ -230,10 +230,10 @@ describe('EditWordForm', () => {
         onCancel={mockOnCancel}
       />
     );
-    
+
     const originalInput = screen.getByDisplayValue('test');
     const replacementInput = screen.getByDisplayValue('prueba');
-    
+
     expect(originalInput).toHaveAttribute('maxLength', '100');
     expect(replacementInput).toHaveAttribute('maxLength', '100');
   });

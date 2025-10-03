@@ -50,8 +50,8 @@ describe('word-replacer', () => {
       expect(result).not.toBeNull();
       expect(result!.node).toBe(node);
       expect(result!.replacedSplitText).toEqual([
-        'hello ', 
-        createTestReplacementObject('robot', 'robot', '机器人', 6, 'hello robot world'), 
+        'hello ',
+        createTestReplacementObject('robot', 'robot', '机器人', 6, 'hello robot world'),
         ' world'
       ]);
     });
@@ -80,7 +80,7 @@ describe('word-replacer', () => {
 
       expect(result).not.toBeNull();
       expect(result!.replacedSplitText).toEqual([
-        createTestReplacementObject('robot', 'robot', '机器人', 0, 'robot is working'), 
+        createTestReplacementObject('robot', 'robot', '机器人', 0, 'robot is working'),
         ' is working'
       ]);
     });
@@ -91,7 +91,7 @@ describe('word-replacer', () => {
 
       expect(result).not.toBeNull();
       expect(result!.replacedSplitText).toEqual([
-        'hello ', 
+        'hello ',
         createTestReplacementObject('robot', 'robot', '机器人', 6, 'hello robot')
       ]);
     });
@@ -102,10 +102,10 @@ describe('word-replacer', () => {
 
       expect(result).not.toBeNull();
       expect(result!.replacedSplitText).toEqual([
-        'Hello ', 
-        createTestReplacementObject('ROBOT', 'robot', '机器人', 6, 'Hello ROBOT and Worker are here'), 
-        ' and ', 
-        createTestReplacementObject('Worker', 'worker', '工人', 16, 'Hello ROBOT and Worker are here'), 
+        'Hello ',
+        createTestReplacementObject('ROBOT', 'robot', '机器人', 6, 'Hello ROBOT and Worker are here'),
+        ' and ',
+        createTestReplacementObject('Worker', 'worker', '工人', 16, 'Hello ROBOT and Worker are here'),
         ' are here'
       ]);
     });
@@ -163,8 +163,8 @@ describe('word-replacer', () => {
       const match: MatchResult = {
         node: textNode,
         replacedSplitText: [
-          'hello ', 
-          createTestReplacementObject('robot', 'robot', '机器人'), 
+          'hello ',
+          createTestReplacementObject('robot', 'robot', '机器人'),
           ' world '
         ]
       };
@@ -185,10 +185,10 @@ describe('word-replacer', () => {
       const match: MatchResult = {
         node: textNode,
         replacedSplitText: [
-          '', 
-          createTestReplacementObject('robot', 'robot', '机器人'), 
-          ' and ', 
-          createTestReplacementObject('worker', 'worker', '工人'), 
+          '',
+          createTestReplacementObject('robot', 'robot', '机器人'),
+          ' and ',
+          createTestReplacementObject('worker', 'worker', '工人'),
           ' '
         ]
       };
@@ -206,8 +206,8 @@ describe('word-replacer', () => {
       const match: MatchResult = {
         node: document.body.firstChild!,
         replacedSplitText: [
-          'Clanker, rust ', 
-          createTestReplacementObject('bucket', 'bucket', '桶'), 
+          'Clanker, rust ',
+          createTestReplacementObject('bucket', 'bucket', '桶'),
           ', tinskin — slang words used to put down robots are on the rise.'
         ]
       };
@@ -221,7 +221,7 @@ describe('word-replacer', () => {
       const match: MatchResult = {
         node: document.body.firstChild!,
         replacedSplitText: [
-          'abc', 
+          'abc',
           createTestReplacementObject('bucket', 'bucket', '桶')
         ]
       };
@@ -238,9 +238,9 @@ describe('word-replacer', () => {
       const match: MatchResult = {
         node: textNode,
         replacedSplitText: [
-          'Hello ', 
-          createTestReplacementObject('ROBOT', 'robot', '机器人'), 
-          ' and ', 
+          'Hello ',
+          createTestReplacementObject('ROBOT', 'robot', '机器人'),
+          ' and ',
           createTestReplacementObject('Worker', 'worker', '工人')
         ]
       };

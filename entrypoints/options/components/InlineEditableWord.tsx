@@ -9,12 +9,12 @@ interface InlineEditableWordProps {
   maxLength?: number;
 }
 
-export default function InlineEditableWord({ 
-  value, 
-  onSave, 
-  className = '', 
+export default function InlineEditableWord({
+  value,
+  onSave,
+  className = '',
   placeholder = '',
-  maxLength = 100 
+  maxLength = 100
 }: InlineEditableWordProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value);
@@ -80,7 +80,7 @@ export default function InlineEditableWord({
   }
 
   return (
-    <span 
+    <span
       onClick={handleClick}
       className={`inline-editable-word ${className}`}
       title="Click to edit"

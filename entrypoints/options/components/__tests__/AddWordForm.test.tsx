@@ -10,9 +10,9 @@ describe('AddWordForm', () => {
     mockOnAddWord.mockClear();
   });
 
-  it('renders form inputs and add button', () => {
+  it('renders form  inputs and add button', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
-    
+
     expect(screen.getByLabelText('Original Word / Phrase')).toBeInTheDocument();
     expect(screen.getByLabelText('Replacement Word')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Add' })).toBeInTheDocument();
@@ -20,7 +20,7 @@ describe('AddWordForm', () => {
 
   it('disables add button when inputs are empty', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
-    
+
     const addButton = screen.getByRole('button', { name: 'Add' });
     expect(addButton).toBeDisabled();
     expect(addButton).toHaveClass('disabled');
@@ -28,7 +28,7 @@ describe('AddWordForm', () => {
 
   it('enables add button when both inputs have values', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
-    
+
     const originalInput = screen.getByLabelText('Original Word / Phrase');
     const replacementInput = screen.getByLabelText('Replacement Word');
     const addButton = screen.getByRole('button', { name: 'Add' });
@@ -42,7 +42,7 @@ describe('AddWordForm', () => {
 
   it('calls onAddWord with trimmed values when form is submitted', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
-    
+
     const originalInput = screen.getByLabelText('Original Word / Phrase');
     const replacementInput = screen.getByLabelText('Replacement Word');
     const addButton = screen.getByRole('button', { name: 'Add' });
@@ -56,7 +56,7 @@ describe('AddWordForm', () => {
 
   it('clears inputs after successful submission', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
-    
+
     const originalInput = screen.getByLabelText('Original Word / Phrase') as HTMLInputElement;
     const replacementInput = screen.getByLabelText('Replacement Word') as HTMLInputElement;
     const addButton = screen.getByRole('button', { name: 'Add' });
@@ -71,7 +71,7 @@ describe('AddWordForm', () => {
 
   it('shows duplicate warning for existing words', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
-    
+
     const originalInput = screen.getByLabelText('Original Word / Phrase');
     const replacementInput = screen.getByLabelText('Replacement Word');
     const addButton = screen.getByRole('button', { name: 'Add' });
@@ -88,7 +88,7 @@ describe('AddWordForm', () => {
 
   it('calls onAddWord when overwrite is confirmed', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
-    
+
     const originalInput = screen.getByLabelText('Original Word / Phrase');
     const replacementInput = screen.getByLabelText('Replacement Word');
     const addButton = screen.getByRole('button', { name: 'Add' });
@@ -105,7 +105,7 @@ describe('AddWordForm', () => {
 
   it('hides duplicate warning when cancel is clicked', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
-    
+
     const originalInput = screen.getByLabelText('Original Word / Phrase');
     const replacementInput = screen.getByLabelText('Replacement Word');
     const addButton = screen.getByRole('button', { name: 'Add' });
@@ -123,7 +123,7 @@ describe('AddWordForm', () => {
 
   it('respects maxLength attribute on inputs', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
-    
+
     const originalInput = screen.getByLabelText('Original Word / Phrase');
     const replacementInput = screen.getByLabelText('Replacement Word');
 

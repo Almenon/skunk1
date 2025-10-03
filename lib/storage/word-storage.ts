@@ -14,7 +14,7 @@ export const wordPairsStorage = storage.defineItem<WordReplacements>('local:word
  * Storage utility functions for managing word replacement pairs
  */
 export class WordStorageService {
-  
+
   /**
    * Get all word replacement pairs from storage
    */
@@ -50,7 +50,7 @@ export class WordStorageService {
     const currentPairs = await this.getWordPairs();
     const sanitizedOriginal = sanitizeWord(originalWord);
     const sanitizedReplacement = sanitizeWord(replacementWord);
-    
+
     await this.setWordPairs({
       ...currentPairs,
       [sanitizedOriginal]: sanitizedReplacement
@@ -68,7 +68,7 @@ export class WordStorageService {
 
     const currentPairs = await this.getWordPairs();
     const sanitizedOriginal = sanitizeWord(originalWord);
-    
+
     if (!(sanitizedOriginal in currentPairs)) {
       throw new Error(`Word pair with original word "${originalWord}" not found`);
     }
@@ -85,7 +85,7 @@ export class WordStorageService {
     if (!(originalWord in currentPairs)) {
       throw new Error(`Word pair with original word "${originalWord}" not found`);
     }
-    
+
     delete currentPairs[originalWord];
     await this.setWordPairs(currentPairs);
   }

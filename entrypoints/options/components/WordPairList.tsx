@@ -13,7 +13,7 @@ interface WordPairListProps {
 
 export default function WordPairList({ wordPairs, onEditWord, onDeleteWord }: WordPairListProps) {
 
-  const sortedPairs = Object.entries(wordPairs).sort(([a], [b]) => 
+  const sortedPairs = Object.entries(wordPairs).sort(([a], [b]) =>
     a.toLowerCase().localeCompare(b.toLowerCase())
   );
 
@@ -42,7 +42,7 @@ export default function WordPairList({ wordPairs, onEditWord, onDeleteWord }: Wo
         <span className="header-replacement">Replacement Word</span>
         <span className="header-actions">Actions</span>
       </div>
-      
+
       {sortedPairs.map(([original, replacement]) => (
         <div key={original} className="word-pair-item">
           <InlineEditableWord
@@ -58,7 +58,7 @@ export default function WordPairList({ wordPairs, onEditWord, onDeleteWord }: Wo
             placeholder="Replacement word"
           />
           <div className="word-actions">
-            <button 
+            <button
               onClick={() => onDeleteWord(original)}
               className="delete-button"
               title="Delete word pair"

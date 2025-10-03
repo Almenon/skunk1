@@ -16,7 +16,7 @@ export function validateWord(word: string): ValidationResult {
   }
 
   const trimmedWord = word.trim();
-  
+
   if (trimmedWord.length === 0) {
     return { isValid: false, error: 'Word cannot be empty or only whitespace' };
   }
