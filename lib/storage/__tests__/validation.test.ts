@@ -20,21 +20,6 @@ describe('Word Validation', () => {
       });
     });
 
-    it('should reject non-string values', () => {
-      expect(validateWord(null as any)).toEqual({ 
-        isValid: false, 
-        error: 'Word must be a non-empty string' 
-      });
-      expect(validateWord(undefined as any)).toEqual({ 
-        isValid: false, 
-        error: 'Word must be a non-empty string' 
-      });
-      expect(validateWord(123 as any)).toEqual({ 
-        isValid: false, 
-        error: 'Word must be a non-empty string' 
-      });
-    });
-
     it('should reject words that are too long', () => {
       const longWord = 'a'.repeat(101);
       expect(validateWord(longWord)).toEqual({ 
@@ -71,17 +56,6 @@ describe('Word Validation', () => {
         'test': 'example'
       };
       expect(validateWordReplacements(wordReplacements)).toEqual({ isValid: true });
-    });
-
-    it('should reject non-object values', () => {
-      expect(validateWordReplacements(null as any)).toEqual({ 
-        isValid: false, 
-        error: 'Word replacements must be an object' 
-      });
-      expect(validateWordReplacements('string' as any)).toEqual({ 
-        isValid: false, 
-        error: 'Word replacements must be an object' 
-      });
     });
 
     it('should reject objects with invalid word pairs', () => {

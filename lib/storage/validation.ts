@@ -55,7 +55,7 @@ export function sanitizeWord(word: string): string {
 /**
  * Validate and sanitize word replacement pairs object
  */
-export function validateWordReplacements(wordReplacements: Record<string, any>): ValidationResult {
+export function validateWordReplacements(wordReplacements: Record<string, string>): ValidationResult {
   if (!wordReplacements || typeof wordReplacements !== 'object') {
     return { isValid: false, error: 'Word replacements must be an object' };
   }

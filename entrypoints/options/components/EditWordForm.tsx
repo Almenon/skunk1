@@ -66,7 +66,7 @@ export default function EditWordForm({
       onCancel();
     } else if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit(e as any);
+      handleSubmit(e);
     }
   };
 
