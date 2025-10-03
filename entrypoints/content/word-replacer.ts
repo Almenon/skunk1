@@ -2,10 +2,24 @@ export interface ReplacementTargets {
   [key: string]: string;
 }
 
+export class ReplacementObject {
+  public originalText: string;
+  public replacementKey: string;
+
+  constructor(
+    public match: RegExpExecArray,
+    public replacementValue: string,
+    replacementKey: string
+  ) {
+    this.originalText = match[0];
+    this.replacementKey = replacementKey;
+  }
+}
+
 export interface MatchResult {
   node: Node;
-  // node.innerText with targets replaced. Also split by target
-  replacedSplitText: string[];
+  // node.innerText with targets replaced
+  replacedSplitText: (string | ReplacementObject)[];
 }
 
 /**
@@ -20,35 +34,39 @@ export function replaceTargetsInText(node: Node, replacementTargets: Replacement
   }
 
   // Find all matches for all targets
-  const matches: RegExpExecArray[] = [];
-  for(const target in replacementTargets){
-    const replacementBetweenWordBoundaries = new RegExp(`\\b${target}\\b`, 'g');
-    matches.push(...textContent.matchAll(replacementBetweenWordBoundaries));
+  const replacements: ReplacementObject[] = []
+  for (const target in replacementTargets) {
+    const replacementBetweenWordBoundaries = new RegExp(`\\b${target}\\b`, 'gi');
+    for (const match of textContent.matchAll(replacementBetweenWordBoundaries)) {
+      replacements.push(new ReplacementObject(match, replacementTargets[target], target));
+    }
   }
-  if(matches.length == 0) return null
+  if (replacements.length == 0) return null
 
   // Sort matches by position (ascending), then by length (descending) for overlaps
-  matches.sort((matchA, matchB) => {
-      const result = matchA.index - matchB.index
-      if(result == 0) {
-          return matchB[0].length - matchA[0].length
-      }
-      return result
+  replacements.sort((A, B) => {
+    const matchA = A.match;
+    const matchB = B.match;
+    const result = matchA.index - matchB.index
+    if (result == 0) {
+      return matchB[0].length - matchA[0].length
+    }
+    return result
   })
 
   // Split text around matches, avoiding overlaps
   let index = 0;
-  const result: string[] = [];
-  for (const match of matches) {
-    if(match.index < index) continue; // Skip overlapping matches
+  const result: (string | ReplacementObject)[] = [];
+  for (const replacement of replacements) {
+    const match = replacement.match
+    if (match.index < index) continue; // Skip overlapping matches
 
     // Add text before match
-    if(index !== match.index){
+    if (index !== match.index) {
       result.push(textContent.slice(index, match.index))
     }
 
-    // Add the matched text
-    result.push(match[0]);
+    result.push(replacement);
     index = match.index + match[0].length;
   }
 
@@ -56,35 +74,38 @@ export function replaceTargetsInText(node: Node, replacementTargets: Replacement
   if (index < textContent.length) {
     result.push(textContent.slice(index));
   }
-  
+
   return { node, replacedSplitText: result };
 }
 
-export function createReplacementElement(wordToReplace: string, wordReplacements: ReplacementTargets): HTMLAnchorElement {
+export function createReplacementElement(replacementObj: ReplacementObject): HTMLAnchorElement {
   const aElement = document.createElement('a');
-  const wordReplacement = wordReplacements[wordToReplace];
+  const wordReplacement = replacementObj.replacementValue;
   aElement.textContent = wordReplacement;
   aElement.href = "https://www.dong-chinese.com/dictionary/search/" + wordReplacement;
   return aElement;
 }
 
-export function replaceTextInNode(match: MatchResult, wordReplacements: ReplacementTargets): void {
+
+
+export function replaceTextInNode(match: MatchResult): void {
   const { node, replacedSplitText: parts } = match;
   const parent = node.parentNode;
-  
+
   if (parent) {
     const nextSibling = node.nextSibling;
     parent.removeChild(node);
-    
+
     for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
       let newNode: Node;
-      if (parts[i] in wordReplacements) {
-        console.log(`replacing ${parts[i]} with ${wordReplacements[parts[i]]}. At:`, parent)
-        newNode = createReplacementElement(parts[i], wordReplacements);
+      if (part instanceof ReplacementObject) {
+        console.log(`replacing ${part.match[0]} with ${part.replacementValue}. At:`, parent)
+        newNode = createReplacementElement(part);
       } else {
-        newNode = document.createTextNode(parts[i]);
+        newNode = document.createTextNode(part);
       }
-      
+
       if (nextSibling) {
         parent.insertBefore(newNode, nextSibling);
       } else {
@@ -95,16 +116,16 @@ export function replaceTextInNode(match: MatchResult, wordReplacements: Replacem
 }
 
 export function scanAndReplaceWords(
-  body: Element, 
-  wordReplacements: ReplacementTargets, 
+  body: Element,
+  wordReplacements: ReplacementTargets,
   iterationMax: number = 30000
 ): { scannedCount: number; matchCount: number } {
   const matches: MatchResult[] = [];
   let index = 0;
-  
+
   const startTime = performance.now()
   const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT);
-  
+
   for (index = 0; walker.nextNode(); index++) {
     if (index > iterationMax) {
       console.info("Scanning webpage but webpage is too big to scan everything efficiently. Exiting.");
@@ -117,12 +138,12 @@ export function scanAndReplaceWords(
     }
   }
 
-  console.log(`Found ${matches.length} matches in ${performance.now()-startTime}ms`);
+  console.log(`Found ${matches.length} matches in ${performance.now() - startTime}ms`);
   console.log('Replacing target elements: ', matches);
-  
+
   const startTime2 = performance.now()
-  matches.forEach(match => replaceTextInNode(match, wordReplacements));
-  console.log(`Replaced ${matches.length} matches in ${performance.now()-startTime2}ms`);
-  
+  matches.forEach(match => replaceTextInNode(match));
+  console.log(`Replaced ${matches.length} matches in ${performance.now() - startTime2}ms`);
+
   return { scannedCount: index, matchCount: matches.length };
 }
