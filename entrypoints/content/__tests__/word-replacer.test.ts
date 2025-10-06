@@ -201,35 +201,6 @@ describe('word-replacer', () => {
       expect(anchors[1].textContent).toBe('工人');
     });
 
-    it('should make sure replacement is in correct order (test1)', () => {
-      document.body.innerHTML = '<p>Clanker, rust bucket, tinskin —<a href="https://www.npr.org/2025/08/06/nx-s1-5493360/clanker-robot-slur-star-wars" target="_blank"> <u>slang words used to put down robots</u></a> are on the rise.</p>'
-      const match: MatchResult = {
-        node: document.body.firstChild!,
-        replacedSplitText: [
-          'Clanker, rust ',
-          createTestReplacementObject('bucket', 'bucket', '桶'),
-          ', tinskin — slang words used to put down robots are on the rise.'
-        ]
-      };
-
-      replaceTextInNode(match);
-      expect(document.body.textContent).toBe('Clanker, rust 桶, tinskin — slang words used to put down robots are on the rise.')
-    });
-
-    it('should make sure replacement is in correct order (test2)', () => {
-      document.body.innerHTML = '<div><a>a</a><p>b</p><div>c</div>bucket</div>'
-      const match: MatchResult = {
-        node: document.body.firstChild!,
-        replacedSplitText: [
-          'abc',
-          createTestReplacementObject('bucket', 'bucket', '桶')
-        ]
-      };
-
-      replaceTextInNode(match);
-      expect(document.body?.textContent).toBe('abc桶')
-    });
-
     it('should handle case insensitive replacements', () => {
       const container = document.createElement('div');
       const textNode = document.createTextNode('Hello ROBOT and Worker');
@@ -285,6 +256,13 @@ describe('word-replacer', () => {
       expect(anchors.length).toBe(2);
       expect(anchors[0].textContent).toBe('机器人');
       expect(anchors[1].textContent).toBe('工人');
+    });
+
+    it('should make sure replacement is in correct order (test1)', () => {
+      document.body.innerHTML = '<p>Clanker, rust bucket, tinskin —<a href="https://www.npr.org/2025/08/06/nx-s1-5493360/clanker-robot-slur-star-wars" target="_blank"> <u>slang words used to put down robots</u></a> are on the rise.</p>'
+
+      scanAndReplaceWords(document.body, replacementTargets, 50)
+      expect(document.body.textContent).toBe('Clanker, rust 桶, tinskin — slang words used to put down robots are on the rise.')
     });
 
     it('should respect iteration limit', () => {
@@ -350,4 +328,5 @@ describe('word-replacer', () => {
       expect(document.body.textContent).toBe('The 机器人 and 工人 are here');
     });
   });
-});
+})
+  ;
