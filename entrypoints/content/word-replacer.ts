@@ -132,6 +132,11 @@ export function scanAndReplaceWords(
       break;
     }
 
+    if (walker.currentNode.parentElement?.tagName === 'SCRIPT' || walker.currentNode.parentElement?.tagName === 'STYLE') {
+      // these elements are not visible, no point in replacing them
+      continue;
+    }
+
     const match = replaceTargetsInText(walker.currentNode, wordReplacements);
     if (match) {
       matches.push(match);
