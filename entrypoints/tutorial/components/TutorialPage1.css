@@ -83,6 +83,40 @@
     margin-right: 1rem;
 }
 
+/* Your Replacements section styling */
+.replacements-section {
+    margin-top: 1.5rem;
+    margin-left: 2rem;
+    padding: 0;
+}
+
+.replacements-section h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6c757d;
+    margin: 0 0 0.75rem 0;
+    line-height: 1.4;
+}
+
+.replacements-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.replacements-list li {
+    padding: 0.25rem 0;
+    font-size: 0.9rem;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.replacement-arrow {
+    color: #adb5bd;
+    font-weight: normal;
+    margin: 0 0.25rem;
+}
+
 @media (max-width: 768px) {
     .tutorial-page {
         padding: 1rem;
@@ -111,5 +145,19 @@
     .tutorial-page .add-word-form .form-group:first-child {
         margin-right: 0;
         margin-bottom: 1rem;
+    }
+
+    .replacements-section {
+        margin-top: 1rem;
+        margin-left: 1rem;
+        padding: 0;
+    }
+
+    .replacements-section h3 {
+        font-size: 0.9rem;
+    }
+
+    .replacements-list li {
+        font-size: 0.85rem;
     }
 }

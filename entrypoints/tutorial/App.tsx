@@ -27,7 +27,6 @@ export default function App() {
         <div className="tutorial-container">
             <div className="tutorial-header">
                 <h1>Welcome to Word Replacer!</h1>
-                <p>Let's get you started with a quick tutorial</p>
             </div>
 
             <div className="tutorial-content">

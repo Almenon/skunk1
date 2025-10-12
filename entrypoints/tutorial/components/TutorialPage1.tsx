@@ -59,12 +59,12 @@ export default function TutorialPage1() {
             </div>
 
             {Object.keys(demoWords).length > 0 && (
-                <div style={{ marginTop: '20px' }}>
+                <div className="replacements-section">
                     <h3>Your Replacements:</h3>
-                    <ul>
+                    <ul className="replacements-list">
                         {Object.entries(demoWords).map(([original, replacement]) => (
                             <li key={original}>
-                                "{original}" → "{replacement}"
+                                "{original}"<span className="replacement-arrow">→</span>"{replacement}"
                             </li>
                         ))}
                     </ul>
