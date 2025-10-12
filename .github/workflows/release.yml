@@ -9,26 +9,21 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
-        with:
-          version: 10
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: npm install
 
       - name: Zip extensions
         run: |
-          pnpm zip
-          pnpm zip:firefox
+          npx zip
+          npx zip:firefox
 
 #      - name: Submit to stores
 #        run: |
-#          pnpm wxt submit \
+#          npx wxt submit \
 #            --chrome-zip .output/*-chrome.zip \
 #            --firefox-zip .output/*-firefox.zip --firefox-sources-zip .output/*-sources.zip
 #        env:

@@ -14,28 +14,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
-        with:
-          version: 10
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: npm ci
 
       - name: Type check
-        run: pnpm compile
+        run: npx compile
 
       - name: Lint code
-        run: pnpm lint
+        run: npx lint
 
       - name: Run tests
-        run: pnpm test
+        run: npx test
 
       - name: Build extension
-        run: pnpm build
+        run: npx build
