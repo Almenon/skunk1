@@ -38,8 +38,8 @@ export default function WordPairList({ wordPairs, onEditWord, onDeleteWord }: Wo
   return (
     <div className="word-pair-list">
       <div className="word-pair-header">
-        <span className="header-original">Original Word / Phrase</span>
-        <span className="header-replacement">Replacement Word</span>
+        <span className="header-original">Original</span>
+        <span className="header-replacement">Replacement</span>
         <span className="header-actions">Actions</span>
       </div>
 

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 import './AddWordForm.css';
 
 interface AddWordFormProps {
@@ -66,7 +66,7 @@ export default function AddWordForm({ onAddWord, existingWords }: AddWordFormPro
           </div>
 
           <div className="form-group">
-            <label htmlFor="replacement-word">Replacement Word</label>
+            <label htmlFor="replacement-word">Replacement Word / Phrase</label>
             <input
               id="replacement-word"
               type="text"

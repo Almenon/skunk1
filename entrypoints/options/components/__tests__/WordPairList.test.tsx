@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import WordPairList from '../WordPairList';
 
 describe('WordPairList', () => {
@@ -54,8 +54,8 @@ describe('WordPairList', () => {
       />
     );
 
-    expect(screen.getByText('Original Word / Phrase')).toBeInTheDocument();
-    expect(screen.getByText('Replacement Word')).toBeInTheDocument();
+    expect(screen.getByText('Original')).toBeInTheDocument();
+    expect(screen.getByText('Replacement')).toBeInTheDocument();
     expect(screen.getByText('Actions')).toBeInTheDocument();
   });
 

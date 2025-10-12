@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import AddWordForm from '../AddWordForm';
 
 describe('AddWordForm', () => {
@@ -14,7 +14,7 @@ describe('AddWordForm', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
 
     expect(screen.getByLabelText('Original Word / Phrase')).toBeInTheDocument();
-    expect(screen.getByLabelText('Replacement Word')).toBeInTheDocument();
+    expect(screen.getByLabelText('Replacement Word / Phrase')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Add' })).toBeInTheDocument();
   });
 
@@ -30,7 +30,7 @@ describe('AddWordForm', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
 
     const originalInput = screen.getByLabelText('Original Word / Phrase');
-    const replacementInput = screen.getByLabelText('Replacement Word');
+    const replacementInput = screen.getByLabelText('Replacement Word / Phrase');
     const addButton = screen.getByRole('button', { name: 'Add' });
 
     fireEvent.change(originalInput, { target: { value: 'test' } });
@@ -44,7 +44,7 @@ describe('AddWordForm', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
 
     const originalInput = screen.getByLabelText('Original Word / Phrase');
-    const replacementInput = screen.getByLabelText('Replacement Word');
+    const replacementInput = screen.getByLabelText('Replacement Word / Phrase');
     const addButton = screen.getByRole('button', { name: 'Add' });
 
     fireEvent.change(originalInput, { target: { value: '  test  ' } });
@@ -58,7 +58,7 @@ describe('AddWordForm', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
 
     const originalInput = screen.getByLabelText('Original Word / Phrase') as HTMLInputElement;
-    const replacementInput = screen.getByLabelText('Replacement Word') as HTMLInputElement;
+    const replacementInput = screen.getByLabelText('Replacement Word / Phrase') as HTMLInputElement;
     const addButton = screen.getByRole('button', { name: 'Add' });
 
     fireEvent.change(originalInput, { target: { value: 'test' } });
@@ -73,7 +73,7 @@ describe('AddWordForm', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
 
     const originalInput = screen.getByLabelText('Original Word / Phrase');
-    const replacementInput = screen.getByLabelText('Replacement Word');
+    const replacementInput = screen.getByLabelText('Replacement Word / Phrase');
     const addButton = screen.getByRole('button', { name: 'Add' });
 
     fireEvent.change(originalInput, { target: { value: 'hello' } });
@@ -90,7 +90,7 @@ describe('AddWordForm', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
 
     const originalInput = screen.getByLabelText('Original Word / Phrase');
-    const replacementInput = screen.getByLabelText('Replacement Word');
+    const replacementInput = screen.getByLabelText('Replacement Word / Phrase');
     const addButton = screen.getByRole('button', { name: 'Add' });
 
     fireEvent.change(originalInput, { target: { value: 'hello' } });
@@ -107,7 +107,7 @@ describe('AddWordForm', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
 
     const originalInput = screen.getByLabelText('Original Word / Phrase');
-    const replacementInput = screen.getByLabelText('Replacement Word');
+    const replacementInput = screen.getByLabelText('Replacement Word / Phrase');
     const addButton = screen.getByRole('button', { name: 'Add' });
 
     fireEvent.change(originalInput, { target: { value: 'hello' } });
@@ -125,7 +125,7 @@ describe('AddWordForm', () => {
     render(<AddWordForm onAddWord={mockOnAddWord} existingWords={existingWords} />);
 
     const originalInput = screen.getByLabelText('Original Word / Phrase');
-    const replacementInput = screen.getByLabelText('Replacement Word');
+    const replacementInput = screen.getByLabelText('Replacement Word / Phrase');
 
     expect(originalInput).toHaveAttribute('maxLength', '100');
     expect(replacementInput).toHaveAttribute('maxLength', '100');
