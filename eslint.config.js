@@ -9,5 +9,5 @@ export default defineConfig([
   tseslint.configs.recommended,
   // todo implement react linting
   //pluginReact.configs.flat.recommended,
-  globalIgnores([".output"])
+  globalIgnores([".output", ".wxt"])
 ]);
