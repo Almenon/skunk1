@@ -55,7 +55,7 @@ export default function TutorialPage1() {
             </div>
 
             <div className="demo-text" ref={demoTextRef}>
-                The cat is sleeping on the table. I need to buy some food from the store. The weather is very nice today. My friend lives in a big house. We can go to the park tomorrow.
+                The cat is sleeping on the table. I need to go to the store to buy food for my cat. Today the weather is very good, so it will be a nice walk to the grocery store nearby.
             </div>
 
             {Object.keys(demoWords).length > 0 && (
