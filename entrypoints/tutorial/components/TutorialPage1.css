@@ -22,7 +22,7 @@
     justify-content: center;
     width: 3rem;
     height: 3rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(117deg, #0a35f5 0%, #007bff 100%);
     color: white;
     border-radius: 50%;
     font-size: 1.5rem;
@@ -31,21 +31,8 @@
     position: relative;
 }
 
-.step-number::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 50%;
-    z-index: -1;
-    opacity: 0.3;
-}
-
 .step-text {
-    font-size: 1.25rem;
+    font-size: 1.20rem;
     font-weight: 600;
     color: #2c3e50;
     line-height: 1.4;
@@ -88,12 +75,12 @@
     margin-top: 1.5rem;
     margin-left: 2rem;
     padding: 0;
+    color: #6c757d;
 }
 
 .replacements-section h3 {
     font-size: 1rem;
     font-weight: 500;
-    color: #6c757d;
     margin: 0 0 0.75rem 0;
     line-height: 1.4;
 }
@@ -106,14 +93,11 @@
 
 .replacements-list li {
     padding: 0.25rem 0;
-    font-size: 0.9rem;
-    color: #6c757d;
+    font-size: 1rem;
     line-height: 1.4;
 }
 
 .replacement-arrow {
-    color: #adb5bd;
-    font-weight: normal;
     margin: 0 0.25rem;
 }
 
