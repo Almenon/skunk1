@@ -23,13 +23,13 @@ jobs:
         run: npm ci
 
       - name: Type check
-        run: npx compile
+        run: npm run compile
 
       - name: Lint code
-        run: npx lint
+        run: npm run lint
 
       - name: Run tests
-        run: npx test
+        run: npm run test
 
       - name: Build extension
-        run: npx build
+        run: npm run build

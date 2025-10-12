@@ -14,12 +14,12 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Zip extensions
         run: |
-          npx zip
-          npx zip:firefox
+          npm run zip
+          npm run zip:firefox
 
 #      - name: Submit to stores
 #        run: |
