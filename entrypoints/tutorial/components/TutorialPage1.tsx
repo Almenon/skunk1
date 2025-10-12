@@ -34,29 +34,22 @@ export default function TutorialPage1() {
 
     return (
         <div>
-            <h2>How Word Replacer Works</h2>
             <p>
-                Word Replacer automatically replaces words or phrases on web pages as you browse.
-                Try it out below - add a word replacement and see how it changes the sample text!
+                #1: Add the English and Chinese words you want to practice.
             </p>
-
-            <div className="demo-text" ref={demoTextRef}>
-                This is a sample text where you can see how the word replacer works. Try adding a word replacement below and watch this text change!
-            </div>
-
-            <p>
-                <strong>Try these examples:</strong>
-            </p>
-            <ul>
-                <li>Replace "sample" with "demo"</li>
-                <li>Replace "word" with "text"</li>
-                <li>Replace "works" with "functions"</li>
-            </ul>
 
             <AddWordForm
                 onAddWord={handleAddWord}
                 existingWords={existingWords}
             />
+
+            <p>
+                #2: As you browse the web, your chosen words will appear in Chinese.
+            </p>
+
+            <div className="demo-text" ref={demoTextRef}>
+                This is a sample text where you can see how the word replacer works. Try adding a word replacement below and watch this text change!
+            </div>
 
             {Object.keys(demoWords).length > 0 && (
                 <div style={{ marginTop: '20px' }}>
