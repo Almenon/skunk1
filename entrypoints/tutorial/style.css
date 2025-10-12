@@ -1,0 +1,222 @@
+:root {
+    --primary-blue: #007bff;
+    --primary-blue-hover: #0056b3;
+    --secondary-gray: #6c757d;
+    --secondary-gray-hover: #545b62;
+    --border-color: #e9ecef;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --background-light: #f8f9fa;
+    --border-radius: 6px;
+    --transition: 0.2s ease;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-color: #f5f5f5;
+}
+
+#app {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.tutorial-container {
+    padding: 40px;
+}
+
+.tutorial-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.tutorial-header h1 {
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.tutorial-header p {
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+.tutorial-content {
+    margin-bottom: 40px;
+}
+
+.demo-text {
+    background: var(--background-light);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 60px;
+}
+
+.tutorial-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.page-indicator {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Unified button styles */
+button {
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color var(--transition);
+}
+
+.nav-button {
+    background: var(--primary-blue);
+    color: white;
+    padding: 12px 24px;
+}
+
+.nav-button:hover:not(:disabled) {
+    background: var(--primary-blue-hover);
+}
+
+.nav-button:disabled {
+    background: var(--secondary-gray);
+    cursor: not-allowed;
+}
+
+.nav-button.secondary {
+    background: var(--secondary-gray);
+}
+
+.nav-button.secondary:hover {
+    background: var(--secondary-gray-hover);
+}
+
+/* AddWordForm styles */
+.add-word-form {
+    width: 100%;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: border-color var(--transition);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.add-button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-blue);
+    color: white;
+    font-weight: 500;
+    white-space: nowrap;
+    margin-left: 1rem;
+    margin-bottom: 0.1rem;
+}
+
+.add-button:hover:not(.disabled) {
+    background-color: var(--primary-blue-hover);
+}
+
+.add-button.disabled {
+    background-color: var(--secondary-gray);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.duplicate-warning {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: var(--border-radius);
+    color: #856404;
+}
+
+.duplicate-warning p {
+    margin: 0 0 1rem 0;
+    font-weight: 500;
+}
+
+.warning-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.confirm-button {
+    padding: 0.5rem 1rem;
+    background-color: #dc3545;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.confirm-button:hover {
+    background-color: #c82333;
+}
+
+.cancel-button {
+    padding: 0.5rem 1rem;
+    background-color: var(--secondary-gray);
+    color: white;
+    font-size: 0.9rem;
+}
+
+.cancel-button:hover {
+    background-color: var(--secondary-gray-hover);
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-group {
+        min-width: unset;
+    }
+
+    .add-button {
+        width: 100%;
+    }
+}
