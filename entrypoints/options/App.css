@@ -1,5 +1,5 @@
 .options-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 2rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
@@ -166,8 +166,13 @@
 
 /* Animations */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .word-pairs-list {
@@ -183,11 +188,11 @@
   .options-container {
     padding: 1rem;
   }
-  
+
   .options-header h1 {
     font-size: 2rem;
   }
-  
+
   .word-pairs-section,
   .add-word-section {
     padding: 1.5rem;
