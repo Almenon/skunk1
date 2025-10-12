@@ -18,9 +18,8 @@ export default function App() {
         }
     };
 
-    const closeTutorial = () => {
-        // Close the tutorial tab
-        window.close();
+    const openOptions = () => {
+        document.location = browser.runtime.getURL('/options.html');
     };
 
     return (
@@ -55,7 +54,7 @@ export default function App() {
                             Next
                         </button>
                     ) : (
-                        <button className="nav-button" onClick={closeTutorial}>
+                        <button className="nav-button" onClick={openOptions}>
                             Get Started!
                         </button>
                     )}
