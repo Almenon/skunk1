@@ -1,69 +1,7 @@
+/* TutorialLanguagePage specific styles - common styles moved to style.css */
+
+/* Override tutorial-page padding for language page */
 .tutorial-page {
     padding: 20px;
     max-width: 600px;
-    margin: 0 auto;
-}
-
-.step-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-.step-number {
-    background: #007bff;
-    color: white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 15px;
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-.step-text {
-    color: #333;
-}
-
-.step-description {
-    color: #666;
-    font-size: 1rem;
-    line-height: 1.5;
-    margin-bottom: 30px;
-}
-
-.language-selection-container {
-    margin: 30px 0;
-}
-
-.selected-language-info {
-    margin-top: 30px;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border-left: 4px solid #28a745;
-}
-
-.confirmation-text {
-    color: #155724;
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-}
-
-.next-step-hint {
-    color: #6c757d;
-    font-size: 0.95rem;
-    margin-bottom: 0;
-}
-
-.loading-message {
-    text-align: center;
-    padding: 40px;
-    color: #666;
-    font-size: 1.1rem;
 }

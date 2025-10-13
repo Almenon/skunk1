@@ -1,12 +1,30 @@
-import { useRef, useState } from 'react';
-import { WordStorageService } from '../../../lib/storage';
+import { useEffect, useRef, useState } from 'react';
+import { ConfigService, WordStorageService } from '../../../lib/storage';
 import { scanAndReplaceWords } from '../../content/word-replacer';
 import AddWordForm from '../../options/components/AddWordForm';
 import './TutorialPage1.css';
 
 export default function TutorialPage1() {
     const [demoWords, setDemoWords] = useState<{ [key: string]: string }>({});
+    const [selectedLanguageName, setSelectedLanguageName] = useState<string>('Chinese');
     const demoTextRef = useRef<HTMLDivElement>(null);
+
+    // Load the selected language name
+    useEffect(() => {
+        const loadLanguageName = async () => {
+            try {
+                const languageCode = await ConfigService.getActiveLanguage();
+                const availableLanguages = ConfigService.getAvailableLanguages();
+                const language = availableLanguages.find((lang) => lang.code === languageCode);
+                setSelectedLanguageName(language?.name || 'Chinese');
+            } catch (error) {
+                console.error('Failed to load language name:', error);
+                setSelectedLanguageName('Chinese'); // Fallback
+            }
+        };
+
+        loadLanguageName();
+    }, []);
 
     const handleAddWord = async (original: string, replacement: string) => {
         try {
@@ -38,7 +56,7 @@ export default function TutorialPage1() {
             <div className="tutorial-step">
                 <h2 className="step-header">
                     <span className="step-number">1</span>
-                    <span className="step-text">Add the English and Chinese words you want to practice.</span>
+                    <span className="step-text">Add the English and {selectedLanguageName} words you want to practice.</span>
                 </h2>
             </div>
 
@@ -50,7 +68,7 @@ export default function TutorialPage1() {
             <div className="tutorial-step">
                 <h2 className="step-header">
                     <span className="step-number">2</span>
-                    <span className="step-text">As you browse the web, your chosen words will appear in Chinese.</span>
+                    <span className="step-text">As you browse the web, your chosen words will appear in {selectedLanguageName}.</span>
                 </h2>
             </div>
 
