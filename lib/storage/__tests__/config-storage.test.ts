@@ -177,10 +177,10 @@ describe('ConfigService', () => {
             expect(ConfigService.getDictionaryStorageKey('\tes\t')).toBe('local:es-dictionary');
         });
 
-        it('should throw error for invalid language codes', () => {
-            expect(() => ConfigService.getDictionaryStorageKey('invalid')).toThrow('Invalid language code: invalid');
-            expect(() => ConfigService.getDictionaryStorageKey('')).toThrow('Invalid language code: ');
-            expect(() => ConfigService.getDictionaryStorageKey('xyz')).toThrow('Invalid language code: xyz');
+        it('should accept any language codes', () => {
+            expect(ConfigService.getDictionaryStorageKey('invalid')).toBe('local:invalid-dictionary');
+            expect(ConfigService.getDictionaryStorageKey('')).toBe('local:-dictionary');
+            expect(ConfigService.getDictionaryStorageKey('xyz')).toBe('local:xyz-dictionary');
         });
     });
 

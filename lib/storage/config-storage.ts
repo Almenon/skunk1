@@ -94,11 +94,10 @@ export class ConfigService {
      * Generate storage key for language-specific dictionary
      */
     static getDictionaryStorageKey(languageCode: string): string {
-        if (typeof languageCode !== 'string' || languageCode.trim().length === 0 || !ISO6391.validate(languageCode.trim())) {
-            throw new Error(`Invalid language code: ${languageCode}`);
-        }
         return `local:${languageCode.trim()}-dictionary`;
     }
+
+
 
     /**
      * Watch for changes to configuration
