@@ -23,6 +23,17 @@
   border-bottom: 1px solid #e8eaed;
 }
 
+.page-header .header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.page-header .header-text {
+  flex: 1;
+}
+
 .page-header h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
@@ -33,6 +44,10 @@
   font-size: 1.1rem;
   margin: 0;
   color: #5f6368;
+}
+
+.page-header .header-language-indicator {
+  flex-shrink: 0;
 }
 
 .page-main {
@@ -226,6 +241,12 @@
 
   .page-header h1 {
     font-size: 1.75rem;
+  }
+
+  .page-header .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
   }
 
   .word-pairs-section,

@@ -1,38 +1,83 @@
 import { useCallback, useEffect, useState } from 'react';
-import { WordReplacements, WordStorageService } from '../../../lib/storage/word-storage';
-import { AddWordForm, WordPairList } from '../components';
+import type { AppConfig } from '../../../lib/storage';
+import { ConfigService, WordReplacements, WordStorageService } from '../../../lib/storage';
+import { ActiveLanguageIndicator, AddWordForm, WordPairList } from '../components';
 
 export function DictionaryPage() {
     const [wordPairs, setWordPairs] = useState<WordReplacements>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [operationInProgress, setOperationInProgress] = useState(false);
+    const [currentLanguage, setCurrentLanguage] = useState<string>('en');
+    const [wordStorageService, setWordStorageService] = useState<WordStorageService | null>(null);
 
-    // Load word pairs from storage on component mount
+    // Initialize WordStorageService with active language and load word pairs
     useEffect(() => {
-        const loadWordPairs = async () => {
+        const initializeService = async () => {
             try {
                 setLoading(true);
                 setError(null);
-                const pairs = await WordStorageService.getWordPairs();
+
+                // Get the active language
+                const activeLanguage = await ConfigService.getActiveLanguage();
+                setCurrentLanguage(activeLanguage);
+
+                // Create WordStorageService instance for the active language
+                const service = new WordStorageService(activeLanguage);
+                setWordStorageService(service);
+
+                // Load word pairs for the active language
+                const pairs = await service.getWordPairs();
                 setWordPairs(pairs);
             } catch (err) {
-                console.error('Failed to load word pairs:', err);
-                setError('Failed to load word pairs from storage. Please refresh the page.');
+                console.error('Failed to initialize dictionary:', err);
+                setError('Failed to load dictionary. Please refresh the page.');
             } finally {
                 setLoading(false);
             }
         };
 
-        loadWordPairs();
+        initializeService();
     }, []);
 
     // Set up real-time storage synchronization
     useEffect(() => {
-        return WordStorageService.watchWordPairs((newValue) => {
+        if (!wordStorageService) return;
+
+        return wordStorageService.watchWordPairs((newValue) => {
             setWordPairs(newValue);
         });
-    }, [wordPairs]);
+    }, [wordStorageService]);
+
+    // Watch for language changes and update the service
+    useEffect(() => {
+        const unwatch = ConfigService.watchConfig(async (newConfig: AppConfig) => {
+            if (newConfig.selectedLanguage !== currentLanguage) {
+                try {
+                    setLoading(true);
+                    setError(null);
+
+                    // Update current language
+                    setCurrentLanguage(newConfig.selectedLanguage);
+
+                    // Create new WordStorageService instance for the new language
+                    const service = new WordStorageService(newConfig.selectedLanguage);
+                    setWordStorageService(service);
+
+                    // Load word pairs for the new language
+                    const pairs = await service.getWordPairs();
+                    setWordPairs(pairs);
+                } catch (err) {
+                    console.error('Failed to switch language:', err);
+                    setError('Failed to switch language. Please refresh the page.');
+                } finally {
+                    setLoading(false);
+                }
+            }
+        });
+
+        return unwatch;
+    }, [currentLanguage]);
 
     // Generic handler for all storage operations
     const handleStorageOperation = useCallback(async (operation: () => Promise<void>, operationName: string) => {
@@ -49,29 +94,35 @@ export function DictionaryPage() {
     }, []);
 
     const handleAddWord = useCallback((original: string, replacement: string) => {
+        if (!wordStorageService) return Promise.reject(new Error('Storage service not initialized'));
+
         return handleStorageOperation(
-            () => WordStorageService.addWordPair(original, replacement),
+            () => wordStorageService.addWordPair(original, replacement),
             'add word pair'
         );
-    }, [handleStorageOperation]);
+    }, [handleStorageOperation, wordStorageService]);
 
     const handleEditWord = useCallback((oldOriginal: string, newOriginal: string, newReplacement: string) => {
+        if (!wordStorageService) return Promise.reject(new Error('Storage service not initialized'));
+
         return handleStorageOperation(async () => {
             if (oldOriginal !== newOriginal) {
-                await WordStorageService.deleteWordPair(oldOriginal);
-                await WordStorageService.addWordPair(newOriginal, newReplacement);
+                await wordStorageService.deleteWordPair(oldOriginal);
+                await wordStorageService.addWordPair(newOriginal, newReplacement);
             } else {
-                await WordStorageService.updateWordPair(oldOriginal, newReplacement);
+                await wordStorageService.updateWordPair(oldOriginal, newReplacement);
             }
         }, 'edit word pair');
-    }, [handleStorageOperation]);
+    }, [handleStorageOperation, wordStorageService]);
 
     const handleDeleteWord = useCallback((original: string) => {
+        if (!wordStorageService) return Promise.reject(new Error('Storage service not initialized'));
+
         return handleStorageOperation(
-            () => WordStorageService.deleteWordPair(original),
+            () => wordStorageService.deleteWordPair(original),
             'delete word pair'
         );
-    }, [handleStorageOperation]);
+    }, [handleStorageOperation, wordStorageService]);
 
     // Clear error after a delay
     useEffect(() => {
@@ -95,8 +146,18 @@ export function DictionaryPage() {
     return (
         <div className="page-content">
             <header className="page-header">
-                <h1>Dictionary</h1>
-                <p>Manage your word replacement pairs</p>
+                <div className="header-content">
+                    <div className="header-text">
+                        <h1>Dictionary</h1>
+                        <p>Manage your word replacement pairs</p>
+                    </div>
+                    <ActiveLanguageIndicator
+                        className="header-language-indicator"
+                        size="medium"
+                        showCode={true}
+                        showNativeName={true}
+                    />
+                </div>
             </header>
 
             {error && (

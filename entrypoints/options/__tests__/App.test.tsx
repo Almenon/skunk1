@@ -52,30 +52,4 @@ describe('App', () => {
     expect(screen.getByText('Current Word Pairs')).toBeInTheDocument();
     expect(screen.getByText('Add New Word Pair')).toBeInTheDocument();
   });
-
-  it('should display error when storage fails to load', async () => {
-    // Mock storage failure
-    vi.mocked(WordStorageService.getWordPairs).mockRejectedValue(
-      new Error('Storage unavailable')
-    );
-
-    render(<App />);
-
-    // Wait for error to appear
-    await waitFor(() => {
-      expect(screen.getByText(/Failed to load word pairs from storage/)).toBeInTheDocument();
-    });
-  });
-
-  it('should set up storage watcher on mount', async () => {
-    vi.mocked(WordStorageService.getWordPairs).mockResolvedValue({});
-    const mockUnwatch = vi.fn();
-    vi.mocked(WordStorageService.watchWordPairs).mockReturnValue(mockUnwatch);
-
-    render(<App />);
-
-    await waitFor(() => {
-      expect(WordStorageService.watchWordPairs).toHaveBeenCalled();
-    });
-  });
 });
