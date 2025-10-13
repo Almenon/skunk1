@@ -59,7 +59,6 @@ describe('LanguageSwitcher', () => {
             expect(screen.getByRole('combobox')).toBeInTheDocument();
         });
 
-        const select = screen.getByRole('combobox');
         const options = screen.getAllByRole('option');
 
         expect(options).toHaveLength(4);
