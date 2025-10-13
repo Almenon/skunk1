@@ -1,5 +1,15 @@
 
+import { useState } from 'react';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
+
 export function ManageDictionariesPage() {
+    const [currentLanguage, setCurrentLanguage] = useState<string>('en');
+
+    const handleLanguageChange = (newLanguage: string) => {
+        setCurrentLanguage(newLanguage);
+        console.log(`Dictionary language switched to: ${newLanguage}`);
+    };
+
     return (
         <div className="page-content">
             <header className="page-header">
@@ -7,10 +17,7 @@ export function ManageDictionariesPage() {
                 <p>Import, export, and manage multiple dictionaries</p>
             </header>
             <main className="page-main">
-                <div className="empty-state">
-                    <p>Dictionary management features coming soon</p>
-                    <p>This will allow you to import/export word pairs and manage multiple dictionaries.</p>
-                </div>
+                <LanguageSwitcher onLanguageChange={handleLanguageChange} />
             </main>
         </div>
     );
