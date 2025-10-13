@@ -4,15 +4,15 @@ import { Sidebar } from './components';
 import { ConfigurationPage, DictionaryPage, ManageDictionariesPage } from './pages';
 
 function App() {
-  const [activeMenuItem, setActiveMenuItem] = useState('dictionary');
+  const [activeMenuItem, setActiveMenuItem] = useState('Dictionary');
 
   const renderPage = () => {
     switch (activeMenuItem) {
-      case 'configuration':
+      case 'Configuration':
         return <ConfigurationPage />;
-      case 'dictionary':
+      case 'Dictionary':
         return <DictionaryPage />;
-      case 'manage-dictionaries':
+      case 'Manage Dictionaries':
         return <ManageDictionariesPage />;
       default:
         return <DictionaryPage />;

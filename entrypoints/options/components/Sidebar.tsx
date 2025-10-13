@@ -6,9 +6,9 @@ interface SidebarProps {
 }
 
 const menuItems = [
-    { id: 'configuration', label: 'Configuration' },
-    { id: 'dictionary', label: 'Dictionary' },
-    { id: 'manage-dictionaries', label: 'Manage Dictionaries' },
+    'Configuration',
+    'Dictionary',
+    'Manage Dictionaries',
 ];
 
 export function Sidebar({ activeItem, onItemClick }: SidebarProps) {
@@ -17,11 +17,11 @@ export function Sidebar({ activeItem, onItemClick }: SidebarProps) {
             <div className="sidebar-content">
                 {menuItems.map((item) => (
                     <button
-                        key={item.id}
-                        className={`sidebar-item ${activeItem === item.id ? 'active' : ''}`}
-                        onClick={() => onItemClick(item.id)}
+                        key={item}
+                        className={`sidebar-item ${activeItem === item ? 'active' : ''}`}
+                        onClick={() => onItemClick(item)}
                     >
-                        {item.label}
+                        {item}
                     </button>
                 ))}
             </div>
