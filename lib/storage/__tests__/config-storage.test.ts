@@ -12,41 +12,12 @@ vi.mock('#imports', () => ({
     }
 }));
 
-// Mock iso-639-1 library
-vi.mock('iso-639-1', () => ({
-    default: {
-        getAllCodes: vi.fn(() => ['en', 'es', 'fr', 'de', 'zh', 'ja']),
-        getName: vi.fn((code: string) => {
-            const names: Record<string, string> = {
-                'en': 'English',
-                'es': 'Spanish',
-                'fr': 'French',
-                'de': 'German',
-                'zh': 'Chinese',
-                'ja': 'Japanese'
-            };
-            return names[code] || 'Unknown';
-        }),
-        getNativeName: vi.fn((code: string) => {
-            const nativeNames: Record<string, string> = {
-                'en': 'English',
-                'es': 'Español',
-                'fr': 'Français',
-                'de': 'Deutsch',
-                'zh': '中文',
-                'ja': '日本語'
-            };
-            return nativeNames[code] || 'Unknown';
-        }),
-        validate: vi.fn((code: string) => {
-            const validCodes = ['en', 'es', 'fr', 'de', 'zh', 'ja'];
-            return validCodes.includes(code);
-        })
-    }
-}));
-
 describe('ConfigService', () => {
-    let mockStorage: unknown;
+    let mockStorage: {
+        getValue: ReturnType<typeof vi.fn>;
+        setValue: ReturnType<typeof vi.fn>;
+        watch: ReturnType<typeof vi.fn>;
+    };
 
     beforeEach(() => {
         // Reset mocks before each test
