@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import TutorialLanguagePage from './components/TutorialLanguagePage.tsx';
 import TutorialPage1 from './components/TutorialPage1.tsx';
 import TutorialPage2 from './components/TutorialPage2.tsx';
 
 export default function App() {
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = 2;
+    const [isLanguageSelected, setIsLanguageSelected] = useState(false);
+    const totalPages = 3;
 
     const nextPage = () => {
         if (currentPage < totalPages) {
@@ -29,8 +31,13 @@ export default function App() {
             </div>
 
             <div className="tutorial-content">
-                {currentPage === 1 && <TutorialPage1 />}
-                {currentPage === 2 && <TutorialPage2 />}
+                {currentPage === 1 && (
+                    <TutorialLanguagePage
+                        onLanguageSelected={setIsLanguageSelected}
+                    />
+                )}
+                {currentPage === 2 && <TutorialPage1 />}
+                {currentPage === 3 && <TutorialPage2 />}
             </div>
 
             <div className="tutorial-navigation">
@@ -50,7 +57,11 @@ export default function App() {
                     )}
 
                     {currentPage < totalPages ? (
-                        <button className="nav-button" onClick={nextPage}>
+                        <button
+                            className={`nav-button ${currentPage === 1 && !isLanguageSelected ? 'disabled' : ''}`}
+                            onClick={nextPage}
+                            disabled={currentPage === 1 && !isLanguageSelected}
+                        >
                             Next
                         </button>
                     ) : (

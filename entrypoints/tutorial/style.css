@@ -84,9 +84,11 @@ button {
     background: var(--primary-blue-hover);
 }
 
-.nav-button:disabled {
+.nav-button:disabled,
+.nav-button.disabled {
     background: var(--secondary-gray);
     cursor: not-allowed;
+    opacity: 0.6;
 }
 
 .nav-button.secondary {
