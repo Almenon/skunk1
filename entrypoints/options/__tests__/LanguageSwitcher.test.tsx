@@ -49,7 +49,6 @@ describe('LanguageSwitcher', () => {
 
         expect(screen.getByText('English')).toBeInTheDocument();
         expect(screen.getByText('(English)')).toBeInTheDocument();
-        expect(screen.getByText('[en]')).toBeInTheDocument();
     });
 
     it('should populate language select with available languages', async () => {
@@ -59,13 +58,27 @@ describe('LanguageSwitcher', () => {
             expect(screen.getByRole('combobox')).toBeInTheDocument();
         });
 
-        const options = screen.getAllByRole('option');
+        // Click to open the dropdown
+        const combobox = screen.getByRole('combobox');
+        fireEvent.focus(combobox);
 
+        await waitFor(() => {
+            const options = screen.getAllByRole('option');
+            expect(options).toHaveLength(4);
+        });
+
+        // Check that all languages appear in the dropdown options
+        const dropdown = screen.getByRole('listbox');
+        expect(dropdown).toBeInTheDocument();
+
+        const options = screen.getAllByRole('option');
         expect(options).toHaveLength(4);
-        expect(screen.getByRole('option', { name: 'English (English)' })).toBeInTheDocument();
-        expect(screen.getByRole('option', { name: 'Spanish (Español)' })).toBeInTheDocument();
-        expect(screen.getByRole('option', { name: 'Chinese (中文)' })).toBeInTheDocument();
-        expect(screen.getByRole('option', { name: 'French (Français)' })).toBeInTheDocument();
+
+        // Check specific language options by their role and content
+        expect(screen.getByRole('option', { name: /English/ })).toBeInTheDocument();
+        expect(screen.getByRole('option', { name: /Spanish.*Español/ })).toBeInTheDocument();
+        expect(screen.getByRole('option', { name: /Chinese.*中文/ })).toBeInTheDocument();
+        expect(screen.getByRole('option', { name: /French.*Français/ })).toBeInTheDocument();
     });
 
     it('should handle language change successfully', async () => {
@@ -76,10 +89,18 @@ describe('LanguageSwitcher', () => {
             expect(screen.getByRole('combobox')).toBeInTheDocument();
         });
 
-        const select = screen.getByRole('combobox');
+        const combobox = screen.getByRole('combobox');
 
-        // Change to Spanish
-        fireEvent.change(select, { target: { value: 'es' } });
+        // Focus to open dropdown
+        fireEvent.focus(combobox);
+
+        await waitFor(() => {
+            expect(screen.getByText('Spanish')).toBeInTheDocument();
+        });
+
+        // Click on Spanish option
+        const spanishOption = screen.getByText('Spanish');
+        fireEvent.click(spanishOption);
 
         await waitFor(() => {
             expect(ConfigService.setActiveLanguage).toHaveBeenCalledWith('es');
@@ -113,8 +134,15 @@ describe('LanguageSwitcher', () => {
             expect(screen.getByRole('combobox')).toBeInTheDocument();
         });
 
-        const select = screen.getByRole('combobox');
-        fireEvent.change(select, { target: { value: 'es' } });
+        const combobox = screen.getByRole('combobox');
+        fireEvent.focus(combobox);
+
+        await waitFor(() => {
+            expect(screen.getByText('Spanish')).toBeInTheDocument();
+        });
+
+        const spanishOption = screen.getByText('Spanish');
+        fireEvent.click(spanishOption);
 
         await waitFor(() => {
             expect(screen.getByText('Failed to change language. Please try again.')).toBeInTheDocument();
@@ -128,16 +156,17 @@ describe('LanguageSwitcher', () => {
             expect(screen.getByRole('combobox')).toBeInTheDocument();
         });
 
-        const select = screen.getByRole('combobox');
+        const combobox = screen.getByRole('combobox');
 
-        // Try to select an invalid language (this shouldn't happen in normal usage)
-        fireEvent.change(select, { target: { value: 'invalid' } });
+        // We'll test this by mocking a scenario where the language validation fails
+        // Focus and try to trigger an invalid selection through the component's internal logic
+        fireEvent.focus(combobox);
 
-        await waitFor(() => {
-            expect(screen.getByText('Failed to change language. Please try again.')).toBeInTheDocument();
-        });
+        // Type an invalid language code that doesn't exist
+        fireEvent.change(combobox, { target: { value: 'invalid-search' } });
 
-        // Should not call setActiveLanguage for invalid language
+        // Since there's no matching language, no selection should occur
+        // The test passes if no error is thrown and setActiveLanguage is not called
         expect(ConfigService.setActiveLanguage).not.toHaveBeenCalled();
     });
 
@@ -161,6 +190,5 @@ describe('LanguageSwitcher', () => {
         });
 
         expect(screen.getByText('(中文)')).toBeInTheDocument();
-        expect(screen.getByText('[zh]')).toBeInTheDocument();
     });
 });

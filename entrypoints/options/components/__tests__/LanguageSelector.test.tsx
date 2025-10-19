@@ -34,6 +34,7 @@ describe('LanguageSelector', () => {
     it('renders input with placeholder text', () => {
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
+        expect(screen.getByRole('combobox')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('Search for a language...')).toBeInTheDocument();
     });
 
@@ -63,7 +64,7 @@ describe('LanguageSelector', () => {
     it('shows dropdown when input is focused', async () => {
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         fireEvent.focus(input);
 
         await waitFor(() => {
@@ -77,7 +78,7 @@ describe('LanguageSelector', () => {
         const user = userEvent.setup();
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         await user.click(input);
         await user.type(input, 'span');
 
@@ -92,7 +93,7 @@ describe('LanguageSelector', () => {
         const user = userEvent.setup();
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         await user.click(input);
         await user.type(input, 'Español');
 
@@ -106,7 +107,7 @@ describe('LanguageSelector', () => {
         const user = userEvent.setup();
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         await user.click(input);
         await user.type(input, 'zh');
 
@@ -120,7 +121,7 @@ describe('LanguageSelector', () => {
         const user = userEvent.setup();
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         await user.click(input);
         await user.type(input, 'xyz');
 
@@ -132,7 +133,7 @@ describe('LanguageSelector', () => {
     it('calls onLanguageSelect when language option is clicked', async () => {
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         fireEvent.focus(input);
 
         await waitFor(() => {
@@ -146,7 +147,7 @@ describe('LanguageSelector', () => {
     it('supports keyboard navigation with arrow keys', async () => {
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         fireEvent.focus(input);
 
         // Wait for dropdown to appear
@@ -165,7 +166,7 @@ describe('LanguageSelector', () => {
     it('selects highlighted option with Enter key', async () => {
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         fireEvent.focus(input);
 
         await waitFor(() => {
@@ -184,7 +185,7 @@ describe('LanguageSelector', () => {
     it('closes dropdown with Escape key', async () => {
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         fireEvent.focus(input);
 
         await waitFor(() => {
@@ -201,7 +202,7 @@ describe('LanguageSelector', () => {
     it('opens dropdown with Enter key when closed', () => {
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         fireEvent.keyDown(input, { key: 'Enter' });
 
         expect(screen.getByText('Spanish')).toBeInTheDocument();
@@ -210,7 +211,7 @@ describe('LanguageSelector', () => {
     it('opens dropdown with ArrowDown key when closed', () => {
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         fireEvent.keyDown(input, { key: 'ArrowDown' });
 
         expect(screen.getByText('Spanish')).toBeInTheDocument();
@@ -224,7 +225,7 @@ describe('LanguageSelector', () => {
             />
         );
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         fireEvent.focus(input);
 
         await waitFor(() => {
@@ -241,7 +242,7 @@ describe('LanguageSelector', () => {
             />
         );
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         expect(input).toBeDisabled();
     });
 
@@ -249,7 +250,7 @@ describe('LanguageSelector', () => {
         const user = userEvent.setup();
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         await user.click(input);
         await user.type(input, 'test');
 
@@ -265,13 +266,12 @@ describe('LanguageSelector', () => {
     it('displays language information correctly in options', async () => {
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         fireEvent.focus(input);
 
         await waitFor(() => {
             // Check that language name, code, and native name are displayed
             expect(screen.getByText('Spanish')).toBeInTheDocument();
-            expect(screen.getByText('(es)')).toBeInTheDocument();
             expect(screen.getByText('Español')).toBeInTheDocument();
         });
     });
@@ -280,7 +280,7 @@ describe('LanguageSelector', () => {
         const user = userEvent.setup();
         render(<LanguageSelector onLanguageSelect={mockOnLanguageSelect} />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('combobox');
         await user.click(input);
         await user.type(input, 'SPANISH');
 

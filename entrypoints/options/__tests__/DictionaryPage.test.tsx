@@ -89,7 +89,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Wait for initialization
         await waitFor(() => {
-            expect(screen.getByText('Dictionary - Spanish')).toBeInTheDocument();
+            expect(screen.getByText('Español Dictionary')).toBeInTheDocument();
         });
 
         // Check that ConfigService was called to get active language
@@ -115,7 +115,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Wait for initial load
         await waitFor(() => {
-            expect(screen.getByText('Dictionary - English')).toBeInTheDocument();
+            expect(screen.getByText('English Dictionary')).toBeInTheDocument();
         });
 
         // Verify initial state
@@ -145,7 +145,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Wait for initialization
         await waitFor(() => {
-            expect(screen.getByText('Dictionary - French')).toBeInTheDocument();
+            expect(screen.getByText('Français Dictionary')).toBeInTheDocument();
         });
 
         // Verify WordStorageService was created with French language
@@ -171,7 +171,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Wait for initial load
         await waitFor(() => {
-            expect(screen.getByText('Dictionary - English')).toBeInTheDocument();
+            expect(screen.getByText('English Dictionary')).toBeInTheDocument();
         });
 
         // Trigger language change
@@ -198,7 +198,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Wait for initial load
         await waitFor(() => {
-            expect(screen.getByText('Dictionary - English')).toBeInTheDocument();
+            expect(screen.getByText('English Dictionary')).toBeInTheDocument();
         });
 
         // Trigger language change that will fail
@@ -231,7 +231,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Wait for initial load
         await waitFor(() => {
-            expect(screen.getByText('Dictionary - English')).toBeInTheDocument();
+            expect(screen.getByText('English Dictionary')).toBeInTheDocument();
         });
 
         // Verify first watcher is set up

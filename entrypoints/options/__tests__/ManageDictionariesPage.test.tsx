@@ -55,11 +55,21 @@ describe('ManageDictionariesPage', () => {
             expect(screen.getByRole('combobox')).toBeInTheDocument();
         });
 
-        const select = screen.getByRole('combobox');
-        fireEvent.change(select, { target: { value: 'zh' } });
+        const combobox = screen.getByRole('combobox');
+
+        // Focus to open dropdown
+        fireEvent.focus(combobox);
 
         await waitFor(() => {
-            expect(consoleSpy).toHaveBeenCalledWith('Dictionary language switched to: zh', { currentLanguage: 'en' });
+            expect(screen.getByText('Chinese')).toBeInTheDocument();
+        });
+
+        // Click on Chinese option
+        const chineseOption = screen.getByText('Chinese');
+        fireEvent.click(chineseOption);
+
+        await waitFor(() => {
+            expect(consoleSpy).toHaveBeenCalledWith('Dictionary language switched from en to: zh');
         });
 
         consoleSpy.mockRestore();
