@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ConfigService, type Language } from '../../../lib/storage/config-storage';
+import LanguageSelector from './LanguageSelector';
 
 interface LanguageSwitcherProps {
     onLanguageChange?: (language: string) => void;
@@ -35,9 +36,7 @@ export function LanguageSwitcher({ onLanguageChange }: LanguageSwitcherProps) {
         loadLanguageData();
     }, []);
 
-    const handleLanguageChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newLanguage = event.target.value;
-
+    const handleLanguageChange = async (newLanguage: string) => {
         try {
             setError(null);
 
@@ -92,27 +91,19 @@ export function LanguageSwitcher({ onLanguageChange }: LanguageSwitcherProps) {
                     <div className="language-display">
                         <span className="language-name">{currentLangInfo.name}</span>
                         <span className="language-native">({currentLangInfo.nativeName})</span>
-                        <span className="language-code">[{currentLangInfo.code}]</span>
                     </div>
                 )}
             </div>
 
             <div className="language-selection">
-                <label htmlFor="language-select">
+                <label>
                     <strong>Switch Dictionary Language:</strong>
                 </label>
-                <select
-                    id="language-select"
-                    value={currentLanguage}
-                    onChange={handleLanguageChange}
-                    className="language-select"
-                >
-                    {availableLanguages.map(language => (
-                        <option key={language.code} value={language.code}>
-                            {language.name} ({language.nativeName})
-                        </option>
-                    ))}
-                </select>
+                <LanguageSelector
+                    onLanguageSelect={handleLanguageChange}
+                    selectedLanguage={currentLanguage}
+                    placeholder="Search for a language..."
+                />
             </div>
 
             <div className="language-info">

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { AppConfig } from '../../../lib/storage';
+import type { AppConfig, Language } from '../../../lib/storage';
 import { ConfigService, WordReplacements, WordStorageService } from '../../../lib/storage';
-import { ActiveLanguageIndicator, AddWordForm, WordPairList } from '../components';
+import { AddWordForm, WordPairList } from '../components';
 
 export function DictionaryPage() {
     const [wordPairs, setWordPairs] = useState<WordReplacements>({});
@@ -9,6 +9,7 @@ export function DictionaryPage() {
     const [error, setError] = useState<string | null>(null);
     const [operationInProgress, setOperationInProgress] = useState(false);
     const [currentLanguage, setCurrentLanguage] = useState<string>('en');
+    const [currentLanguageInfo, setCurrentLanguageInfo] = useState<Language | null>(null);
     const [wordStorageService, setWordStorageService] = useState<WordStorageService | null>(null);
 
     // Initialize WordStorageService with active language and load word pairs
@@ -21,6 +22,11 @@ export function DictionaryPage() {
                 // Get the active language
                 const activeLanguage = await ConfigService.getActiveLanguage();
                 setCurrentLanguage(activeLanguage);
+
+                // Get language info for display
+                const availableLanguages = ConfigService.getAvailableLanguages();
+                const languageInfo = availableLanguages.find(lang => lang.code === activeLanguage);
+                setCurrentLanguageInfo(languageInfo || null);
 
                 // Create WordStorageService instance for the active language
                 const service = new WordStorageService(activeLanguage);
@@ -59,6 +65,11 @@ export function DictionaryPage() {
 
                     // Update current language
                     setCurrentLanguage(newConfig.selectedLanguage);
+
+                    // Get language info for display
+                    const availableLanguages = ConfigService.getAvailableLanguages();
+                    const languageInfo = availableLanguages.find(lang => lang.code === newConfig.selectedLanguage);
+                    setCurrentLanguageInfo(languageInfo || null);
 
                     // Create new WordStorageService instance for the new language
                     const service = new WordStorageService(newConfig.selectedLanguage);
@@ -148,15 +159,9 @@ export function DictionaryPage() {
             <header className="page-header">
                 <div className="header-content">
                     <div className="header-text">
-                        <h1>Dictionary</h1>
-                        <p>Manage your word replacement pairs</p>
+                        <h1>{currentLanguageInfo?.nativeName || 'Unknown Language'} Dictionary</h1>
+                        <p>Set the words you want to practice here</p>
                     </div>
-                    <ActiveLanguageIndicator
-                        className="header-language-indicator"
-                        size="medium"
-                        showCode={true}
-                        showNativeName={true}
-                    />
                 </div>
             </header>
 

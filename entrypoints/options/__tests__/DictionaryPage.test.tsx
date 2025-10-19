@@ -21,13 +21,8 @@ vi.mock('../../../lib/storage', () => ({
     })),
 }));
 
-// Mock the ActiveLanguageIndicator component
+// Mock the components
 vi.mock('../components', () => ({
-    ActiveLanguageIndicator: ({ className }: { className?: string }) => (
-        <div data-testid="active-language-indicator" className={className}>
-            English (en)
-        </div>
-    ),
     AddWordForm: ({ onAddWord }: { onAddWord: (original: string, replacement: string) => void }) => (
         <div data-testid="add-word-form">
             <button onClick={() => onAddWord('test', 'prueba')}>Add Word</button>
@@ -83,7 +78,7 @@ describe('DictionaryPage Language Integration', () => {
         });
     });
 
-    it('should initialize with active language and display language indicator', async () => {
+    it('should initialize with active language and display language in title', async () => {
         vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('es');
         mockWordStorageService.getWordPairs.mockResolvedValue({
             'hello': 'hola',
@@ -94,7 +89,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Wait for initialization
         await waitFor(() => {
-            expect(screen.getByText('Dictionary')).toBeInTheDocument();
+            expect(screen.getByText('Dictionary - Spanish')).toBeInTheDocument();
         });
 
         // Check that ConfigService was called to get active language
@@ -102,10 +97,6 @@ describe('DictionaryPage Language Integration', () => {
 
         // Check that WordStorageService was created with the correct language
         expect(WordStorageService).toHaveBeenCalledWith('es');
-
-        // Check that language indicator is displayed
-        expect(screen.getByTestId('active-language-indicator')).toBeInTheDocument();
-        expect(screen.getByTestId('active-language-indicator')).toHaveClass('header-language-indicator');
 
         // Check that word pairs are loaded
         expect(mockWordStorageService.getWordPairs).toHaveBeenCalled();
@@ -124,7 +115,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Wait for initial load
         await waitFor(() => {
-            expect(screen.getByText('Dictionary')).toBeInTheDocument();
+            expect(screen.getByText('Dictionary - English')).toBeInTheDocument();
         });
 
         // Verify initial state
@@ -154,7 +145,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Wait for initialization
         await waitFor(() => {
-            expect(screen.getByText('Dictionary')).toBeInTheDocument();
+            expect(screen.getByText('Dictionary - French')).toBeInTheDocument();
         });
 
         // Verify WordStorageService was created with French language
@@ -180,7 +171,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Wait for initial load
         await waitFor(() => {
-            expect(screen.getByText('Dictionary')).toBeInTheDocument();
+            expect(screen.getByText('Dictionary - English')).toBeInTheDocument();
         });
 
         // Trigger language change
@@ -207,7 +198,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Wait for initial load
         await waitFor(() => {
-            expect(screen.getByText('Dictionary')).toBeInTheDocument();
+            expect(screen.getByText('Dictionary - English')).toBeInTheDocument();
         });
 
         // Trigger language change that will fail
@@ -240,7 +231,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Wait for initial load
         await waitFor(() => {
-            expect(screen.getByText('Dictionary')).toBeInTheDocument();
+            expect(screen.getByText('Dictionary - English')).toBeInTheDocument();
         });
 
         // Verify first watcher is set up

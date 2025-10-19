@@ -156,7 +156,6 @@ export default function LanguageSelector({
                             >
                                 <div className="language-option-main">
                                     <span className="language-name">{language.name}</span>
-                                    <span className="language-code">({language.code})</span>
                                 </div>
                                 <div className="language-native-name">{language.nativeName}</div>
                             </div>
