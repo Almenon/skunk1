@@ -59,7 +59,7 @@ describe('ManageDictionariesPage', () => {
         fireEvent.change(select, { target: { value: 'zh' } });
 
         await waitFor(() => {
-            expect(consoleSpy).toHaveBeenCalledWith('Dictionary language switched to: zh');
+            expect(consoleSpy).toHaveBeenCalledWith('Dictionary language switched to: zh', { currentLanguage: 'en' });
         });
 
         consoleSpy.mockRestore();

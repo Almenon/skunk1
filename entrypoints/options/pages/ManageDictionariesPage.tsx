@@ -7,7 +7,7 @@ export function ManageDictionariesPage() {
 
     const handleLanguageChange = (newLanguage: string) => {
         setCurrentLanguage(newLanguage);
-        console.log(`Dictionary language switched to: ${newLanguage}`);
+        console.log(`Dictionary language switched from ${currentLanguage} to: ${newLanguage}`);
     };
 
     return (

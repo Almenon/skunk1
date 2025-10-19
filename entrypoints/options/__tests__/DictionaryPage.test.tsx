@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -44,8 +45,14 @@ vi.mock('../components', () => ({
 }));
 
 describe('DictionaryPage Language Integration', () => {
-    let mockWordStorageService: any;
-    let mockConfigWatchCallback: unknown;
+    let mockWordStorageService: {
+        getWordPairs: ReturnType<typeof vi.fn>;
+        addWordPair: ReturnType<typeof vi.fn>;
+        updateWordPair: ReturnType<typeof vi.fn>;
+        deleteWordPair: ReturnType<typeof vi.fn>;
+        watchWordPairs: ReturnType<typeof vi.fn>;
+    };
+    let mockConfigWatchCallback: ((newConfig: { selectedLanguage: string }, oldConfig?: { selectedLanguage: string }) => void) | undefined;
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -67,10 +74,10 @@ describe('DictionaryPage Language Integration', () => {
             watchWordPairs: vi.fn(() => () => { }),
         };
 
-        vi.mocked(WordStorageService).mockImplementation(() => mockWordStorageService);
+        vi.mocked(WordStorageService).mockImplementation(() => mockWordStorageService as any);
 
         // Setup config watcher mock
-        vi.mocked(ConfigService.watchConfig).mockImplementation((callback) => {
+        vi.mocked(ConfigService.watchConfig).mockImplementation((callback: any) => {
             mockConfigWatchCallback = callback;
             return () => { }; // Return unwatch function
         });
@@ -126,7 +133,7 @@ describe('DictionaryPage Language Integration', () => {
 
         // Simulate language change to Spanish
         await waitFor(() => {
-            mockConfigWatchCallback({ selectedLanguage: 'es' });
+            mockConfigWatchCallback?.({ selectedLanguage: 'es' });
         });
 
         // Wait for language switch to complete
@@ -177,7 +184,7 @@ describe('DictionaryPage Language Integration', () => {
         });
 
         // Trigger language change
-        mockConfigWatchCallback({ selectedLanguage: 'es' });
+        mockConfigWatchCallback?.({ selectedLanguage: 'es' });
 
         // Should show loading state
         await waitFor(() => {
@@ -204,7 +211,7 @@ describe('DictionaryPage Language Integration', () => {
         });
 
         // Trigger language change that will fail
-        mockConfigWatchCallback({ selectedLanguage: 'es' });
+        mockConfigWatchCallback?.({ selectedLanguage: 'es' });
 
         // Should show error message
         await waitFor(() => {
@@ -226,8 +233,8 @@ describe('DictionaryPage Language Integration', () => {
         };
 
         vi.mocked(WordStorageService)
-            .mockImplementationOnce(() => mockService1) // First language service
-            .mockImplementationOnce(() => mockService2); // Second language service
+            .mockImplementationOnce(() => mockService1 as any) // First language service
+            .mockImplementationOnce(() => mockService2 as any); // Second language service
 
         render(<DictionaryPage />);
 
@@ -240,7 +247,7 @@ describe('DictionaryPage Language Integration', () => {
         expect(mockService1.watchWordPairs).toHaveBeenCalledTimes(1);
 
         // Switch language
-        mockConfigWatchCallback({ selectedLanguage: 'es' });
+        mockConfigWatchCallback?.({ selectedLanguage: 'es' });
 
         // Wait for language switch
         await waitFor(() => {
