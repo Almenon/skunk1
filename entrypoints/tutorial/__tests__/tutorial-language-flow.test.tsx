@@ -43,7 +43,7 @@ describe('Tutorial Language Flow Integration Tests', () => {
         expect(screen.getByText(/Select the language you want to learn/)).toBeInTheDocument();
 
         // Should show language selector with updated placeholder
-        expect(screen.getByPlaceholderText('Search and select a language...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Search for a language...')).toBeInTheDocument();
 
         // Should call onLanguageSelected with false initially
         expect(mockOnLanguageSelected).toHaveBeenCalledWith(false);
@@ -74,10 +74,10 @@ describe('Tutorial Language Flow Integration Tests', () => {
 
         // Wait for component to load
         await waitFor(() => {
-            expect(screen.getByPlaceholderText('Search and select a language...')).toBeInTheDocument();
+            expect(screen.getByPlaceholderText('Search for a language...')).toBeInTheDocument();
         });
 
-        const languageInput = screen.getByPlaceholderText('Search and select a language...');
+        const languageInput = screen.getByPlaceholderText('Search for a language...');
 
         // Click on input to open dropdown
         await user.click(languageInput);
@@ -121,10 +121,10 @@ describe('Tutorial Language Flow Integration Tests', () => {
         render(<TutorialLanguagePage onLanguageSelected={mockOnLanguageSelected} />);
 
         await waitFor(() => {
-            expect(screen.getByPlaceholderText('Search and select a language...')).toBeInTheDocument();
+            expect(screen.getByPlaceholderText('Search for a language...')).toBeInTheDocument();
         });
 
-        const languageInput = screen.getByPlaceholderText('Search and select a language...');
+        const languageInput = screen.getByPlaceholderText('Search for a language...');
 
         // Try to select a language
         await user.click(languageInput);
@@ -167,7 +167,7 @@ describe('Tutorial Language Flow Integration Tests', () => {
         });
 
         // Select a language
-        const languageInput = screen.getByPlaceholderText('Search and select a language...');
+        const languageInput = screen.getByPlaceholderText('Search for a language...');
         await user.click(languageInput);
         await user.type(languageInput, 'French');
 

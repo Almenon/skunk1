@@ -42,7 +42,7 @@ export default function LanguageSelector({
 
     // Get display value for selected language
     const getDisplayValue = () => {
-        if (selectedLanguage) {
+        if (selectedLanguage && selectedLanguage.trim()) {
             const language = availableLanguages.find(lang => lang.code === selectedLanguage);
             return language ? `${language.name} (${language.nativeName})` : selectedLanguage;
         }
@@ -129,6 +129,10 @@ export default function LanguageSelector({
                 <input
                     ref={inputRef}
                     type="text"
+                    role="combobox"
+                    aria-expanded={isOpen}
+                    aria-haspopup="listbox"
+                    aria-autocomplete="list"
                     value={isOpen ? searchTerm : getDisplayValue()}
                     onChange={handleInputChange}
                     onFocus={handleInputFocus}
@@ -145,11 +149,18 @@ export default function LanguageSelector({
             </div>
 
             {isOpen && (
-                <div ref={dropdownRef} className="language-selector-dropdown">
+                <div
+                    ref={dropdownRef}
+                    className="language-selector-dropdown"
+                    role="listbox"
+                    aria-label="Language options"
+                >
                     {filteredLanguages.length > 0 ? (
                         filteredLanguages.map((language, index) => (
                             <div
                                 key={language.code}
+                                role="option"
+                                aria-selected={language.code === selectedLanguage}
                                 className={`language-option ${index === highlightedIndex ? 'highlighted' : ''} ${language.code === selectedLanguage ? 'selected' : ''
                                     }`}
                                 onClick={() => handleLanguageSelect(language.code)}

@@ -52,7 +52,6 @@ export default function TutorialLanguagePage({ onLanguageSelected }: TutorialLan
                 <LanguageSelector
                     onLanguageSelect={handleLanguageSelect}
                     selectedLanguage={selectedLanguage}
-                    placeholder="Search and select a language..."
                 />
             </div>
 
