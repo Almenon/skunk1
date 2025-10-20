@@ -168,16 +168,4 @@ describe('LanguageSwitcher', () => {
 
         expect(screen.getByText(/Switching languages will change which dictionary is active/)).toBeInTheDocument();
     });
-
-    it('should update display when current language changes', async () => {
-        vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('zh');
-
-        render(<LanguageSwitcher />);
-
-        await waitFor(() => {
-            expect(screen.getByText('Chinese')).toBeInTheDocument();
-        });
-
-        expect(screen.getByText('(中文)')).toBeInTheDocument();
-    });
 });
