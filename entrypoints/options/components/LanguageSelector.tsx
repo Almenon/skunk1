@@ -42,7 +42,7 @@ export default function LanguageSelector({
 
     // Get display value for selected language
     const getDisplayValue = () => {
-        if (selectedLanguage && selectedLanguage.trim()) {
+        if (selectedLanguage?.trim()) {
             const language = availableLanguages.find(lang => lang.code === selectedLanguage);
             return language ? `${language.name} (${language.nativeName})` : selectedLanguage;
         }

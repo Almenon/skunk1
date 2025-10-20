@@ -75,7 +75,6 @@ export function LanguageSwitcher({ onLanguageChange }: LanguageSwitcherProps) {
                 <LanguageSelector
                     onLanguageSelect={handleLanguageChange}
                     selectedLanguage={currentLanguage}
-                    placeholder="Search for a language..."
                 />
             </div>
 
