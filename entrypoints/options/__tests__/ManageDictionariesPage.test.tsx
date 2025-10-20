@@ -39,10 +39,8 @@ describe('ManageDictionariesPage', () => {
         render(<ManageDictionariesPage />);
 
         await waitFor(() => {
-            expect(screen.getByText('Current Dictionary Language')).toBeInTheDocument();
+            expect(screen.getByText('Switch Dictionary Language:')).toBeInTheDocument();
         });
-
-        expect(screen.getByText('Switch Dictionary Language:')).toBeInTheDocument();
     });
 
     it('should handle language change callback', async () => {

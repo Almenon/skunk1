@@ -58,10 +58,6 @@ export function LanguageSwitcher({ onLanguageChange }: LanguageSwitcherProps) {
         }
     };
 
-    const getCurrentLanguageInfo = (): Language | null => {
-        return availableLanguages.find(lang => lang.code === currentLanguage) || null;
-    };
-
     if (isLoading) {
         return (
             <div className="language-switcher loading">
@@ -81,20 +77,8 @@ export function LanguageSwitcher({ onLanguageChange }: LanguageSwitcherProps) {
         );
     }
 
-    const currentLangInfo = getCurrentLanguageInfo();
-
     return (
         <div className="language-switcher">
-            <div className="current-language-info">
-                <h3>Current Dictionary Language</h3>
-                {currentLangInfo && (
-                    <div className="language-display">
-                        <span className="language-name">{currentLangInfo.name}</span>
-                        <span className="language-native">({currentLangInfo.nativeName})</span>
-                    </div>
-                )}
-            </div>
-
             <div className="language-selection">
                 <label>
                     <strong>Switch Dictionary Language:</strong>

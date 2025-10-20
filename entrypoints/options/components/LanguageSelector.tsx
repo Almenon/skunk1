@@ -128,6 +128,7 @@ export default function LanguageSelector({
             <div className="language-selector-input-container">
                 <input
                     ref={inputRef}
+                    id="language-selector-input"
                     type="text"
                     role="combobox"
                     aria-expanded={isOpen}

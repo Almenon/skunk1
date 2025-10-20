@@ -40,17 +40,6 @@ describe('LanguageSwitcher', () => {
         expect(screen.getByText('Loading language settings...')).toBeInTheDocument();
     });
 
-    it('should display current language information after loading', async () => {
-        render(<LanguageSwitcher />);
-
-        await waitFor(() => {
-            expect(screen.getByText('Current Dictionary Language')).toBeInTheDocument();
-        });
-
-        expect(screen.getByText('English')).toBeInTheDocument();
-        expect(screen.getByText('(English)')).toBeInTheDocument();
-    });
-
     it('should populate language select with available languages', async () => {
         render(<LanguageSwitcher />);
 
