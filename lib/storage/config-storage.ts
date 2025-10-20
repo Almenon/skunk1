@@ -1,5 +1,5 @@
 import { storage } from '#imports';
-import ISO6391 from 'iso-639-1';
+import ISO6391, { LanguageCode } from 'iso-639-1';
 
 /**
  * Language interface for language metadata
@@ -79,15 +79,35 @@ export class ConfigService {
         });
     }
 
-    /**
-     * Get all available languages from ISO-639-1
-     */
     static getAvailableLanguages(): Language[] {
-        return ISO6391.getAllCodes().map(code => ({
+        const iso6391 = ISO6391.getAllCodes().map(code => ({
             code,
             name: ISO6391.getName(code),
             nativeName: ISO6391.getNativeName(code)
         }));
+
+        // kinda surprised hawaiian isn't in this iso6391 list
+        // I don't want a long list of languages here, so any language
+        // less popular than hawaiian should not be included
+        // (users can use custom1-10 instead)
+        iso6391.push({
+            code: 'Hawaiian' as LanguageCode,
+            name: 'Hawaiian',
+            nativeName: 'ōlelo Hawaiʻi'
+        })
+
+        // Number is very arbitrary. Can be increased if there's anyone crazy enough
+        // to try learning more than 15 exotic languages
+        for (let index = 0; index < 15; index++) {
+            const custom = 'Custom' + (index + 1).toString();
+            iso6391.push({
+                code: custom as LanguageCode,
+                name: custom,
+                nativeName: custom,
+            })
+        }
+
+        return iso6391
     }
 
     /**
