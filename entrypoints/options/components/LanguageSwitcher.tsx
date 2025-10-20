@@ -40,12 +40,6 @@ export function LanguageSwitcher({ onLanguageChange }: LanguageSwitcherProps) {
         try {
             setError(null);
 
-            // Validate language selection
-            const isValid = availableLanguages.some(lang => lang.code === newLanguage);
-            if (!isValid) {
-                throw new Error(`Invalid language selection: ${newLanguage}`);
-            }
-
             // Update configuration
             await ConfigService.setActiveLanguage(newLanguage);
             setCurrentLanguage(newLanguage);
