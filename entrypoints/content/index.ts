@@ -1,5 +1,5 @@
 import { ConfigService, WordStorageService } from '../../lib/storage';
-import { scanAndReplaceWords } from './word-replacer';
+import { revertAllReplacements, scanAndReplaceWords } from './word-replacer';
 
 export default defineContentScript({
   matches: ["*://*/*"],
@@ -43,6 +43,11 @@ export default defineContentScript({
     // Watch for word pairs changes in current language
     const unwatchWordPairs = currentWordStorageService!.watchWordPairs(async () => {
       console.log('Word replacements updated - re-scanning page');
+
+      // Revert existing replacements before applying new ones
+      const revertResult = revertAllReplacements();
+      console.log(`Reverted ${revertResult.revertedCount} existing word replacements`);
+
       await performWordReplacement();
     });
 
@@ -54,6 +59,10 @@ export default defineContentScript({
         // Cleanup old watcher
         unwatchWordPairs();
 
+        // Revert all existing replacements before switching languages
+        const revertResult = revertAllReplacements();
+        console.log(`Reverted ${revertResult.revertedCount} existing word replacements`);
+
         // Reinitialize with new language
         await initializeWordStorageService();
 
@@ -63,6 +72,11 @@ export default defineContentScript({
         // Set up new watcher for the new language
         const newUnwatchWordPairs = currentWordStorageService!.watchWordPairs(async () => {
           console.log('Word replacements updated - re-scanning page');
+
+          // Revert existing replacements before applying new ones
+          const revertResult = revertAllReplacements();
+          console.log(`Reverted ${revertResult.revertedCount} existing word replacements`);
+
           await performWordReplacement();
         });
 

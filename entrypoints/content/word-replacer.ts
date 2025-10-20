@@ -16,6 +16,17 @@ export class ReplacementObject {
   }
 }
 
+// Track all replacements made on the page
+interface ReplacementRecord {
+  element: HTMLAnchorElement;
+  originalText: string;
+  parentNode: Node;
+  nextSibling: Node | null;
+}
+
+// Global tracking of all replacements
+const activeReplacements: ReplacementRecord[] = [];
+
 export interface MatchResult {
   node: Node;
   // node.innerText with targets replaced
@@ -83,6 +94,11 @@ export function createReplacementElement(replacementObj: ReplacementObject): HTM
   const wordReplacement = replacementObj.replacementValue;
   aElement.textContent = wordReplacement;
   aElement.href = "https://www.dong-chinese.com/dictionary/search/" + wordReplacement;
+
+  // Add a data attribute to identify this as a word replacement
+  aElement.setAttribute('data-word-replacement', 'true');
+  aElement.setAttribute('data-original-text', replacementObj.originalText);
+
   return aElement;
 }
 
@@ -101,7 +117,16 @@ export function replaceTextInNode(match: MatchResult): void {
       let newNode: Node;
       if (part instanceof ReplacementObject) {
         console.log(`replacing ${part.match[0]} with ${part.replacementValue}. At:`, parent)
-        newNode = createReplacementElement(part);
+        const replacementElement = createReplacementElement(part);
+        newNode = replacementElement;
+
+        // Track this replacement for potential reversal
+        activeReplacements.push({
+          element: replacementElement,
+          originalText: part.originalText,
+          parentNode: parent,
+          nextSibling: nextSibling
+        });
       } else {
         newNode = document.createTextNode(part);
       }
@@ -113,6 +138,47 @@ export function replaceTextInNode(match: MatchResult): void {
       }
     }
   }
+}
+
+/**
+ * Reverts all word replacements made on the page
+ * This is useful when switching languages to clear previous replacements
+ */
+export function revertAllReplacements(): { revertedCount: number } {
+  const startTime = performance.now();
+  let revertedCount = 0;
+
+  // Process replacements in reverse order to maintain DOM structure
+  for (let i = activeReplacements.length - 1; i >= 0; i--) {
+    const record = activeReplacements[i];
+
+    try {
+      // Check if the element is still in the DOM
+      if (record.element.parentNode) {
+        // Create a text node with the original text
+        const originalTextNode = document.createTextNode(record.originalText);
+
+        // Replace the anchor element with the original text
+        record.element.parentNode.replaceChild(originalTextNode, record.element);
+        revertedCount++;
+      }
+    } catch (error) {
+      console.warn('Failed to revert replacement:', error);
+    }
+  }
+
+  // Clear the tracking array
+  activeReplacements.length = 0;
+
+  console.log(`Reverted ${revertedCount} word replacements in ${performance.now() - startTime}ms`);
+  return { revertedCount };
+}
+
+/**
+ * Gets the count of active replacements on the page
+ */
+export function getActiveReplacementCount(): number {
+  return activeReplacements.length;
 }
 
 export function scanAndReplaceWords(

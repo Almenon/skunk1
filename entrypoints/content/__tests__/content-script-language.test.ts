@@ -17,7 +17,8 @@ vi.mock('../../../lib/storage', () => ({
 
 // Mock the word-replacer module
 vi.mock('../word-replacer', () => ({
-    scanAndReplaceWords: vi.fn().mockReturnValue({ matchCount: 0, scannedCount: 0 })
+    scanAndReplaceWords: vi.fn().mockReturnValue({ matchCount: 0, scannedCount: 0 }),
+    revertAllReplacements: vi.fn().mockReturnValue({ revertedCount: 0 })
 }));
 
 describe('Content Script Language Support', () => {

@@ -1,12 +1,14 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
-  replaceTargetsInText,
   createReplacementElement,
-  replaceTextInNode,
-  scanAndReplaceWords,
-  ReplacementTargets,
+  getActiveReplacementCount,
   MatchResult,
-  ReplacementObject
+  ReplacementObject,
+  ReplacementTargets,
+  replaceTargetsInText,
+  replaceTextInNode,
+  revertAllReplacements,
+  scanAndReplaceWords
 } from '../word-replacer';
 
 describe('word-replacer', () => {
@@ -28,6 +30,8 @@ describe('word-replacer', () => {
 
   beforeEach(() => {
     document.body.innerHTML = '';
+    // Clear any active replacements from previous tests
+    revertAllReplacements();
   });
 
   describe('findMatch', () => {
@@ -328,5 +332,102 @@ describe('word-replacer', () => {
       expect(document.body.textContent).toBe('The 机器人 and 工人 are here');
     });
   });
-})
-  ;
+
+  describe('revertAllReplacements', () => {
+    it('should revert all word replacements to original text', () => {
+      document.body.innerHTML = '<p>The robot is working</p>';
+
+      // Make replacements
+      const result = scanAndReplaceWords(document.body, replacementTargets);
+      expect(result.matchCount).toBe(1);
+      expect(document.querySelectorAll('a').length).toBe(1);
+      expect(document.body.textContent).toBe('The 机器人 is working');
+
+      // Revert replacements
+      const revertResult = revertAllReplacements();
+      expect(revertResult.revertedCount).toBe(1);
+      expect(document.querySelectorAll('a').length).toBe(0);
+      expect(document.body.textContent).toBe('The robot is working');
+    });
+
+    it('should revert multiple word replacements', () => {
+      document.body.innerHTML = '<p>The robot and worker are here</p>';
+
+      // Make replacements
+      const result = scanAndReplaceWords(document.body, replacementTargets);
+      expect(result.matchCount).toBe(1);
+      expect(document.querySelectorAll('a').length).toBe(2);
+      expect(document.body.textContent).toBe('The 机器人 and 工人 are here');
+
+      // Revert replacements
+      const revertResult = revertAllReplacements();
+      expect(revertResult.revertedCount).toBe(2);
+      expect(document.querySelectorAll('a').length).toBe(0);
+      expect(document.body.textContent).toBe('The robot and worker are here');
+    });
+
+    it('should handle reverting when no replacements exist', () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+
+      const revertResult = revertAllReplacements();
+      expect(revertResult.revertedCount).toBe(0);
+      expect(document.body.textContent).toBe('Hello world');
+    });
+
+    it('should clear active replacement count after reverting', () => {
+      document.body.innerHTML = '<p>The robot is working</p>';
+
+      // Make replacements
+      scanAndReplaceWords(document.body, replacementTargets);
+      expect(getActiveReplacementCount()).toBe(1);
+
+      // Revert replacements
+      revertAllReplacements();
+      expect(getActiveReplacementCount()).toBe(0);
+    });
+
+    it('should handle language switching scenario', () => {
+      document.body.innerHTML = '<p>The robot and worker are here</p>';
+
+      // Apply Chinese replacements
+      const chineseTargets = { 'robot': '机器人', 'worker': '工人' };
+      scanAndReplaceWords(document.body, chineseTargets);
+      expect(document.body.textContent).toBe('The 机器人 and 工人 are here');
+      expect(getActiveReplacementCount()).toBe(2);
+
+      // Revert before switching to Spanish
+      revertAllReplacements();
+      expect(document.body.textContent).toBe('The robot and worker are here');
+      expect(getActiveReplacementCount()).toBe(0);
+
+      // Apply Spanish replacements
+      const spanishTargets = { 'robot': 'robot', 'worker': 'trabajador' };
+      scanAndReplaceWords(document.body, spanishTargets);
+      expect(document.body.textContent).toBe('The robot and trabajador are here');
+      expect(getActiveReplacementCount()).toBe(2);
+    });
+  });
+
+  describe('getActiveReplacementCount', () => {
+    it('should return 0 when no replacements are active', () => {
+      expect(getActiveReplacementCount()).toBe(0);
+    });
+
+    it('should return correct count after making replacements', () => {
+      document.body.innerHTML = '<p>The robot and worker are here</p>';
+
+      scanAndReplaceWords(document.body, replacementTargets);
+      expect(getActiveReplacementCount()).toBe(2);
+    });
+
+    it('should return 0 after reverting all replacements', () => {
+      document.body.innerHTML = '<p>The robot is working</p>';
+
+      scanAndReplaceWords(document.body, replacementTargets);
+      expect(getActiveReplacementCount()).toBe(1);
+
+      revertAllReplacements();
+      expect(getActiveReplacementCount()).toBe(0);
+    });
+  });
+});
