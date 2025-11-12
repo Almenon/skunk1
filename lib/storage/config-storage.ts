@@ -86,9 +86,9 @@ export class ConfigService {
             nativeName: ISO6391.getNativeName(code)
         }));
 
-        // kinda surprised hawaiian isn't in this iso6391 list
+        // kinda surprised Hawaiian isn't in this iso6391 list
         // I don't want a long list of languages here, so any language
-        // less popular than hawaiian should not be included
+        // less popular than Hawaiian should not be included
         // (users can use custom1-10 instead)
         iso6391.push({
             code: 'Hawaiian' as LanguageCode,
