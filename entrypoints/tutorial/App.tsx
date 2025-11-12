@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import TutorialLanguagePage from './components/TutorialLanguagePage.tsx';
 import TutorialPage1 from './components/TutorialPage1.tsx';
 import TutorialPage2 from './components/TutorialPage2.tsx';
+import TutorialPage3 from './components/TutorialPage3.tsx';
 
 export default function App() {
     const [currentPage, setCurrentPage] = useState(1);
@@ -32,12 +32,12 @@ export default function App() {
 
             <div className="tutorial-content">
                 {currentPage === 1 && (
-                    <TutorialLanguagePage
+                    <TutorialPage1
                         onLanguageSelected={setIsLanguageSelected}
                     />
                 )}
-                {currentPage === 2 && <TutorialPage1 />}
-                {currentPage === 3 && <TutorialPage2 />}
+                {currentPage === 2 && <TutorialPage2 />}
+                {currentPage === 3 && <TutorialPage3 />}
             </div>
 
             <div className="tutorial-navigation">

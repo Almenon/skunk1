@@ -1,91 +1,70 @@
-import { useEffect, useRef, useState } from 'react';
-import { ConfigService, WordStorageService } from '../../../lib/storage';
-import { scanAndReplaceWords } from '../../content/word-replacer';
-import AddWordForm from '../../options/components/AddWordForm';
+import { useEffect, useState } from 'react';
+import { ConfigService } from '../../../lib/storage';
+import LanguageSelector from '../../options/components/LanguageSelector';
 import './TutorialPage1.css';
 
-export default function TutorialPage1() {
-    const [demoWords, setDemoWords] = useState<{ [key: string]: string }>({});
-    const [selectedLanguageName, setSelectedLanguageName] = useState<string>('Chinese');
-    const demoTextRef = useRef<HTMLDivElement>(null);
+interface TutorialPage1Props {
+    onLanguageSelected: (selected: boolean) => void;
+}
 
-    // Load the selected language name
+export default function TutorialPage1({ onLanguageSelected }: TutorialPage1Props) {
+    const [selectedLanguage, setSelectedLanguage] = useState<string>('');
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Start with no language selected for tutorial
     useEffect(() => {
-        const loadLanguageName = async () => {
-            try {
-                const languageCode = await ConfigService.getActiveLanguage();
-                const availableLanguages = ConfigService.getAvailableLanguages();
-                const language = availableLanguages.find((lang) => lang.code === languageCode);
-                setSelectedLanguageName(language?.name || 'Chinese');
-            } catch (error) {
-                console.error('Failed to load language name:', error);
-                setSelectedLanguageName('Chinese'); // Fallback
-            }
-        };
+        setIsLoading(false);
+        onLanguageSelected(false);
+    }, [onLanguageSelected]);
 
-        loadLanguageName();
-    }, []);
-
-    const handleAddWord = async (original: string, replacement: string) => {
+    const handleLanguageSelect = async (languageCode: string) => {
         try {
-            // Add word pair to storage
-            await WordStorageService.addWordPair(original, replacement);
-
-            // Update local state
-            const newWords = { ...demoWords, [original]: replacement };
-            setDemoWords(newWords);
-
-            // Apply word replacement to the demo text element
-            if (demoTextRef.current) {
-                // Reset the demo text to original
-                demoTextRef.current.innerHTML = "The cat is sleeping on the table. I need to buy some food from the store. The weather is very nice today. My friend lives in a big house. We can go to the park tomorrow.";
-
-                // Get all word pairs from storage and apply them
-                const allWordPairs = await WordStorageService.getWordPairs();
-                scanAndReplaceWords(demoTextRef.current, allWordPairs);
-            }
+            await ConfigService.setActiveLanguage(languageCode);
+            setSelectedLanguage(languageCode);
+            onLanguageSelected(true);
         } catch (error) {
-            console.error('Failed to add word pair:', error);
+            console.error('Failed to set active language:', error);
         }
     };
 
-    const existingWords = Object.keys(demoWords);
+    if (isLoading) {
+        return (
+            <div className="tutorial-page">
+                <div className="loading-message">Loading...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="tutorial-page">
             <div className="tutorial-step">
                 <h2 className="step-header">
                     <span className="step-number">1</span>
-                    <span className="step-text">Add the English and {selectedLanguageName} words you want to practice.</span>
+                    <span className="step-text">Choose your dictionary language</span>
                 </h2>
+                <p className="step-description">
+                    Select the language you want to learn. Your dictionary will store word pairs
+                    for this language, and you can switch between different languages later.
+                </p>
             </div>
 
-            <AddWordForm
-                onAddWord={handleAddWord}
-                existingWords={existingWords}
-            />
-
-            <div className="tutorial-step">
-                <h2 className="step-header">
-                    <span className="step-number">2</span>
-                    <span className="step-text">As you browse the web, your chosen words will appear in {selectedLanguageName}.</span>
-                </h2>
+            <div className="language-selection-container">
+                <LanguageSelector
+                    onLanguageSelect={handleLanguageSelect}
+                    selectedLanguage={selectedLanguage}
+                />
             </div>
 
-            <div className="demo-text" ref={demoTextRef}>
-                The cat is sleeping on the table. I need to go to the store to buy food for my cat. Today the weather is very good, so it will be a nice walk to the grocery store nearby.
-            </div>
-
-            {Object.keys(demoWords).length > 0 && (
-                <div className="replacements-section">
-                    <h3>Your Replacements:</h3>
-                    <ul className="replacements-list">
-                        {Object.entries(demoWords).map(([original, replacement]) => (
-                            <li key={original}>
-                                "{original}"<span className="replacement-arrow">→</span>"{replacement}"
-                            </li>
-                        ))}
-                    </ul>
+            {selectedLanguage && (
+                <div className="selected-language-info">
+                    <p className="confirmation-text">
+                        Great! You've selected <strong>
+                            {ConfigService.getAvailableLanguages().find(lang => lang.code === selectedLanguage)?.name}
+                        </strong> as your dictionary language.
+                    </p>
+                    <p className="next-step-hint">
+                        Click "Next" to continue setting up your word replacements.
+                    </p>
                 </div>
             )}
         </div>

@@ -1,14 +1,6 @@
 /* TutorialPage1 specific styles - common styles moved to style.css */
 
-/* Enhanced demo text styling for page 1 */
-.demo-text {
-    background-color: #f8f9fa;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-top: 1.5rem;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #495057;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+.tutorial-page {
+    padding: 20px;
+    max-width: 600px;
 }

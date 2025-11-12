@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConfigService } from '../../../lib/storage';
-import TutorialLanguagePage from '../components/TutorialLanguagePage';
+import TutorialPage1 from '../components/TutorialPage1';
 
 // Mock the ConfigService
 vi.mock('../../../lib/storage', () => ({
@@ -31,7 +31,7 @@ describe('Tutorial Language Flow Integration Tests', () => {
     });
 
     it('should render language selection page with no default selection', async () => {
-        render(<TutorialLanguagePage onLanguageSelected={mockOnLanguageSelected} />);
+        render(<TutorialPage1 onLanguageSelected={mockOnLanguageSelected} />);
 
         // Wait for loading to complete
         await waitFor(() => {
@@ -53,7 +53,7 @@ describe('Tutorial Language Flow Integration Tests', () => {
     });
 
     it('should start with no language selected in tutorial mode', async () => {
-        render(<TutorialLanguagePage onLanguageSelected={mockOnLanguageSelected} />);
+        render(<TutorialPage1 onLanguageSelected={mockOnLanguageSelected} />);
 
         await waitFor(() => {
             expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
@@ -70,7 +70,7 @@ describe('Tutorial Language Flow Integration Tests', () => {
     });
 
     it('should handle language selection and notify parent', async () => {
-        render(<TutorialLanguagePage onLanguageSelected={mockOnLanguageSelected} />);
+        render(<TutorialPage1 onLanguageSelected={mockOnLanguageSelected} />);
 
         // Wait for component to load
         await waitFor(() => {
@@ -118,7 +118,7 @@ describe('Tutorial Language Flow Integration Tests', () => {
 
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
-        render(<TutorialLanguagePage onLanguageSelected={mockOnLanguageSelected} />);
+        render(<TutorialPage1 onLanguageSelected={mockOnLanguageSelected} />);
 
         await waitFor(() => {
             expect(screen.getByPlaceholderText('Search for a language...')).toBeInTheDocument();
@@ -147,7 +147,7 @@ describe('Tutorial Language Flow Integration Tests', () => {
     });
 
     it('should handle loading state correctly', async () => {
-        render(<TutorialLanguagePage onLanguageSelected={mockOnLanguageSelected} />);
+        render(<TutorialPage1 onLanguageSelected={mockOnLanguageSelected} />);
 
         // Should show loading message initially (very briefly)
         // Since we removed the async loading, this test just verifies the component renders
@@ -159,7 +159,7 @@ describe('Tutorial Language Flow Integration Tests', () => {
     });
 
     it('should call onLanguageSelected callback appropriately', async () => {
-        render(<TutorialLanguagePage onLanguageSelected={mockOnLanguageSelected} />);
+        render(<TutorialPage1 onLanguageSelected={mockOnLanguageSelected} />);
 
         // Should call with false initially
         await waitFor(() => {

@@ -1,7 +1,0 @@
-/* TutorialLanguagePage specific styles - common styles moved to style.css */
-
-/* Override tutorial-page padding for language page */
-.tutorial-page {
-    padding: 20px;
-    max-width: 600px;
-}
