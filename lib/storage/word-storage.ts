@@ -67,9 +67,6 @@ export class WordStorageService {
     });
   }
 
-  /**
-   * Update an existing word replacement pair
-   */
   async updateWordPair(originalWord: string, newReplacementWord: string): Promise<void> {
     const validation = validateWordPair(originalWord, newReplacementWord);
     if (!validation.isValid) {
@@ -87,9 +84,6 @@ export class WordStorageService {
     await this.setWordPairs(currentPairs);
   }
 
-  /**
-   * Delete a word replacement pair
-   */
   async deleteWordPair(originalWord: string): Promise<void> {
     const currentPairs = await this.getWordPairs();
     if (!(originalWord in currentPairs)) {
@@ -100,17 +94,11 @@ export class WordStorageService {
     await this.setWordPairs(currentPairs);
   }
 
-  /**
-   * Check if a word pair exists
-   */
   async wordPairExists(originalWord: string): Promise<boolean> {
     const currentPairs = await this.getWordPairs();
     return originalWord in currentPairs;
   }
 
-  /**
-   * Clear all word replacement pairs
-   */
   async clearAllWordPairs(): Promise<void> {
     await this.setWordPairs({});
   }
