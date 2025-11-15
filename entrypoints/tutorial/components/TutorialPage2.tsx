@@ -3,6 +3,7 @@ import { ConfigService, WordStorageService } from '../../../lib/storage';
 import { scanAndReplaceWords } from '../../content/word-replacer';
 import AddWordForm from '../../options/components/AddWordForm';
 import './TutorialPage2.css';
+import ISO6391 from 'iso-639-1';
 
 export default function TutorialPage2() {
     const [demoWords, setDemoWords] = useState<{ [key: string]: string }>({});
@@ -28,10 +29,9 @@ export default function TutorialPage2() {
 
     const handleAddWord = async (original: string, replacement: string) => {
         try {
-            // Add word pair to storage
-            await WordStorageService.addWordPair(original, replacement);
+            const w = new WordStorageService(ISO6391.getCode(selectedLanguageName))
+            await w.addWordPair(original, replacement);
 
-            // Update local state
             const newWords = { ...demoWords, [original]: replacement };
             setDemoWords(newWords);
 
@@ -41,7 +41,7 @@ export default function TutorialPage2() {
                 demoTextRef.current.innerHTML = "The cat is sleeping on the table. I need to buy some food from the store. The weather is very nice today. My friend lives in a big house. We can go to the park tomorrow.";
 
                 // Get all word pairs from storage and apply them
-                const allWordPairs = await WordStorageService.getWordPairs();
+                const allWordPairs = await w.getWordPairs();
                 scanAndReplaceWords(demoTextRef.current, allWordPairs);
             }
         } catch (error) {

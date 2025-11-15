@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { WordStorageService } from '../../../lib/storage/word-storage';
 import App from '../App';
 
 // Mock the storage service
@@ -20,22 +19,11 @@ describe('App', () => {
   });
 
   it('should render loading state initially', () => {
-    // Mock getWordPairs to return a promise that doesn't resolve immediately
-    vi.mocked(WordStorageService.getWordPairs).mockImplementation(
-      () => new Promise(() => { }) // Never resolves
-    );
-
     render(<App />);
-
     expect(screen.getByText('Loading word pairs...')).toBeInTheDocument();
   });
 
   it('should render main interface after loading', async () => {
-    // Mock successful loading
-    vi.mocked(WordStorageService.getWordPairs).mockResolvedValue({
-      'hello': 'hi',
-      'world': 'earth'
-    });
 
     render(<App />);
 

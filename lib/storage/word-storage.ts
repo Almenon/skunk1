@@ -6,25 +6,18 @@ export interface WordReplacements {
   [key: string]: string;
 }
 
-// Legacy storage item for backward compatibility
-export const wordPairsStorage = storage.defineItem<WordReplacements>('local:wordPairs', {
-  defaultValue: {},
-});
-
 /**
  * Storage utility functions for managing word replacement pairs
  * Now supports language-specific storage through constructor
  */
 export class WordStorageService {
-  private language: string;
   private storageItem: ReturnType<typeof storage.defineItem<WordReplacements>>;
 
   /**
    * Create a WordStorageService instance for a specific language
    * @param language - Language code (e.g., 'en', 'es', 'fr')
    */
-  constructor(language: string) {
-    this.language = language;
+  constructor(private language: string) {
     const storageKey = ConfigService.getDictionaryStorageKey(language) as `local:${string}`;
     this.storageItem = storage.defineItem<WordReplacements>(storageKey, {
       defaultValue: {},
@@ -136,105 +129,5 @@ export class WordStorageService {
    */
   getLanguage(): string {
     return this.language;
-  }
-
-  /**
-   * @deprecated Use constructor with language parameter instead
-   * Legacy static methods for backward compatibility
-   */
-  static async getWordPairs(): Promise<WordReplacements> {
-    try {
-      return await wordPairsStorage.getValue();
-    } catch (error) {
-      console.error('Failed to get word pairs from storage:', error);
-      return {};
-    }
-  }
-
-  /**
-   * @deprecated Use constructor with language parameter instead
-   */
-  static async setWordPairs(wordPairs: WordReplacements): Promise<void> {
-    const validation = validateWordReplacements(wordPairs);
-    if (!validation.isValid) {
-      throw new Error(`Invalid word replacements: ${validation.error}`);
-    }
-    await wordPairsStorage.setValue(wordPairs);
-  }
-
-  /**
-   * @deprecated Use constructor with language parameter instead
-   */
-  static async addWordPair(originalWord: string, replacementWord: string): Promise<void> {
-    const validation = validateWordPair(originalWord, replacementWord);
-    if (!validation.isValid) {
-      throw new Error(`Invalid word pair: ${validation.error}`);
-    }
-
-    const currentPairs = await this.getWordPairs();
-    const sanitizedOriginal = sanitizeWord(originalWord);
-    const sanitizedReplacement = sanitizeWord(replacementWord);
-
-    await this.setWordPairs({
-      ...currentPairs,
-      [sanitizedOriginal]: sanitizedReplacement
-    });
-  }
-
-  /**
-   * @deprecated Use constructor with language parameter instead
-   */
-  static async updateWordPair(originalWord: string, newReplacementWord: string): Promise<void> {
-    const validation = validateWordPair(originalWord, newReplacementWord);
-    if (!validation.isValid) {
-      throw new Error(`Invalid word pair: ${validation.error}`);
-    }
-
-    const currentPairs = await this.getWordPairs();
-    const sanitizedOriginal = sanitizeWord(originalWord);
-
-    if (!(sanitizedOriginal in currentPairs)) {
-      throw new Error(`Word pair with original word "${originalWord}" not found`);
-    }
-
-    currentPairs[sanitizedOriginal] = sanitizeWord(newReplacementWord);
-    await this.setWordPairs(currentPairs);
-  }
-
-  /**
-   * @deprecated Use constructor with language parameter instead
-   */
-  static async deleteWordPair(originalWord: string): Promise<void> {
-    const currentPairs = await this.getWordPairs();
-    if (!(originalWord in currentPairs)) {
-      throw new Error(`Word pair with original word "${originalWord}" not found`);
-    }
-
-    delete currentPairs[originalWord];
-    await this.setWordPairs(currentPairs);
-  }
-
-  /**
-   * @deprecated Use constructor with language parameter instead
-   */
-  static async wordPairExists(originalWord: string): Promise<boolean> {
-    const currentPairs = await this.getWordPairs();
-    return originalWord in currentPairs;
-  }
-
-  /**
-   * @deprecated Use constructor with language parameter instead
-   */
-  static async clearAllWordPairs(): Promise<void> {
-    await this.setWordPairs({});
-  }
-
-  /**
-   * @deprecated Use constructor with language parameter instead
-   */
-  static watchWordPairs(callback: (newValue: WordReplacements, oldValue: WordReplacements) => void) {
-    return wordPairsStorage.watch((newValue, oldValue) => {
-      callback(newValue || {}, oldValue || {});
-    });
   }
 }
