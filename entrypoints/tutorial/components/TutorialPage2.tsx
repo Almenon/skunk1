@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import ISO6391 from 'iso-639-1';
 
 import { ConfigService, WordStorageService } from '../../../lib/storage';
-import { scanAndReplaceWords } from '../../content/word-replacer';
+import WordReplacer from '../../content/word-replacer';
 import AddWordForm from '../../options/components/AddWordForm';
 import './TutorialPage2.css';
 
@@ -36,7 +36,8 @@ export default function TutorialPage2() {
 
                 // Get all word pairs from storage and apply them
                 const allWordPairs = await w.getWordPairs();
-                scanAndReplaceWords(demoTextRef.current, allWordPairs);
+                const wordReplacer = new WordReplacer(ISO6391.getCode(selectedLanguageName))
+                wordReplacer.scanAndReplaceWords(demoTextRef.current, allWordPairs);
             }
         } catch (error) {
             console.error('Failed to add word pair:', error);

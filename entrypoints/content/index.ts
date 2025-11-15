@@ -1,5 +1,5 @@
 import { ConfigService, WordStorageService } from '../../lib/storage';
-import { revertAllReplacements, scanAndReplaceWords } from './word-replacer';
+import WordReplacer from './word-replacer';
 
 export default defineContentScript({
   matches: ["*://*/*"],
@@ -9,6 +9,7 @@ export default defineContentScript({
 
     let currentWordStorageService: WordStorageService | null = null;
     let currentLanguage: string;
+    const wordReplacer = new WordReplacer("")
 
     async function initializeWordStorageService() {
       currentLanguage = await ConfigService.getActiveLanguage();
@@ -30,7 +31,8 @@ export default defineContentScript({
       }
 
       const startTime = performance.now();
-      const result = scanAndReplaceWords(body, wordReplacements, ITERATION_MAX);
+      wordReplacer.languageCode = currentLanguage
+      const result = wordReplacer.scanAndReplaceWords(body, wordReplacements, ITERATION_MAX);
       console.log(`Word replacement completed: ${result.matchCount} matches found in ${performance.now() - startTime}ms for language: ${currentLanguage}`);
     }
 
@@ -42,7 +44,7 @@ export default defineContentScript({
       console.log('Word replacements updated - re-scanning page');
 
       // Revert existing replacements before applying new ones
-      const revertResult = revertAllReplacements();
+      const revertResult = wordReplacer.revertAllReplacements();
       console.log(`Reverted ${revertResult.revertedCount} existing word replacements`);
 
       await performWordReplacement();
@@ -57,7 +59,7 @@ export default defineContentScript({
         unwatchWordPairs();
 
         // Revert all existing replacements before switching languages
-        const revertResult = revertAllReplacements();
+        const revertResult = wordReplacer.revertAllReplacements();
         console.log(`Reverted ${revertResult.revertedCount} existing word replacements`);
 
         await initializeWordStorageService();
@@ -69,7 +71,7 @@ export default defineContentScript({
           console.log('Word replacements updated - re-scanning page');
 
           // Revert existing replacements before applying new ones
-          const revertResult = revertAllReplacements();
+          const revertResult = wordReplacer.revertAllReplacements();
           console.log(`Reverted ${revertResult.revertedCount} existing word replacements`);
 
           await performWordReplacement();

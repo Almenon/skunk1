@@ -61,7 +61,7 @@ export class ConfigService {
     }
 
     /**
-     * Get the currently active language
+     * Get the currently active language code
      */
     static async getActiveLanguage(): Promise<string> {
         const config = await this.getConfig();
