@@ -34,13 +34,10 @@ export default defineContentScript({
       console.log(`Word replacement completed: ${result.matchCount} matches found in ${performance.now() - startTime}ms for language: ${currentLanguage}`);
     }
 
-    // Initialize storage service
     await initializeWordStorageService();
 
-    // Initial replacement
     await performWordReplacement();
 
-    // Watch for word pairs changes in current language
     const unwatchWordPairs = currentWordStorageService!.watchWordPairs(async () => {
       console.log('Word replacements updated - re-scanning page');
 
@@ -63,10 +60,8 @@ export default defineContentScript({
         const revertResult = revertAllReplacements();
         console.log(`Reverted ${revertResult.revertedCount} existing word replacements`);
 
-        // Reinitialize with new language
         await initializeWordStorageService();
 
-        // Re-scan page with new language dictionary
         await performWordReplacement();
 
         // Set up new watcher for the new language
