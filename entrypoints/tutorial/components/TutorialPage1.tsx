@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import ISO6391 from 'iso-639-1';
+
 import { ConfigService } from '../../../lib/storage';
 import LanguageSelector from '../../options/components/LanguageSelector';
 import './TutorialPage1.css';
@@ -59,7 +61,7 @@ export default function TutorialPage1({ onLanguageSelected }: TutorialPage1Props
                 <div className="selected-language-info">
                     <p className="confirmation-text">
                         Great! You've selected <strong>
-                            {ConfigService.getAvailableLanguages().find(lang => lang.code === selectedLanguage)?.name}
+                            {ISO6391.getName(selectedLanguage)}
                         </strong> as your dictionary language.
                     </p>
                     <p className="next-step-hint">

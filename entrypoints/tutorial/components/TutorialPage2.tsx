@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import ISO6391 from 'iso-639-1';
+
 import { ConfigService, WordStorageService } from '../../../lib/storage';
 import { scanAndReplaceWords } from '../../content/word-replacer';
 import AddWordForm from '../../options/components/AddWordForm';
 import './TutorialPage2.css';
-import ISO6391 from 'iso-639-1';
 
 export default function TutorialPage2() {
     const [demoWords, setDemoWords] = useState<{ [key: string]: string }>({});
