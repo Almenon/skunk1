@@ -13,15 +13,8 @@ export default function TutorialPage2() {
     // Load the selected language name
     useEffect(() => {
         const loadLanguageName = async () => {
-            try {
-                const languageCode = await ConfigService.getActiveLanguage();
-                const availableLanguages = ConfigService.getAvailableLanguages();
-                const language = availableLanguages.find((lang) => lang.code === languageCode);
-                setSelectedLanguageName(language?.name || 'Chinese');
-            } catch (error) {
-                console.error('Failed to load language name:', error);
-                setSelectedLanguageName('Chinese'); // Fallback
-            }
+            const languageCode = await ConfigService.getActiveLanguage();
+            setSelectedLanguageName(ISO6391.getName(languageCode))
         };
 
         loadLanguageName();
@@ -38,7 +31,7 @@ export default function TutorialPage2() {
             // Apply word replacement to the demo text element
             if (demoTextRef.current) {
                 // Reset the demo text to original
-                demoTextRef.current.innerHTML = "The cat is sleeping on the table. I need to buy some food from the store. The weather is very nice today. My friend lives in a big house. We can go to the park tomorrow.";
+                demoTextRef.current.innerHTML = demoText;
 
                 // Get all word pairs from storage and apply them
                 const allWordPairs = await w.getWordPairs();
@@ -50,6 +43,8 @@ export default function TutorialPage2() {
     };
 
     const existingWords = Object.keys(demoWords);
+
+    const demoText = 'The cat is sleeping on the table. I need to go to the store to buy food for my cat. Today the weather is very good, so it will be a nice walk to the grocery store nearby.'
 
     return (
         <div className="tutorial-page">
@@ -73,7 +68,7 @@ export default function TutorialPage2() {
             </div>
 
             <div className="demo-text" ref={demoTextRef}>
-                The cat is sleeping on the table. I need to go to the store to buy food for my cat. Today the weather is very good, so it will be a nice walk to the grocery store nearby.
+                {demoText}
             </div>
 
             {Object.keys(demoWords).length > 0 && (
