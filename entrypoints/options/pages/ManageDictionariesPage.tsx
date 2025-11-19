@@ -1,13 +1,14 @@
 
 import { useState } from 'react';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
+import { Language } from '@/lib/storage';
 
 export function ManageDictionariesPage() {
-    const [currentLanguage, setCurrentLanguage] = useState<string>('en');
+    const [currentLanguage, setCurrentLanguage] = useState<Language>();
 
-    const handleLanguageChange = (newLanguage: string) => {
+    const handleLanguageChange = (newLanguage: Language) => {
         setCurrentLanguage(newLanguage);
-        console.log(`Dictionary language switched from ${currentLanguage} to: ${newLanguage}`);
+        console.log(`Dictionary language switched from ${currentLanguage?.code} to: ${newLanguage.code}`);
     };
 
     return (

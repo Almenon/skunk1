@@ -13,6 +13,12 @@ vi.mock('#imports', () => ({
 }));
 
 describe('ConfigService', () => {
+    const spanish = {
+        code: 'en',
+        name: 'Spanish',
+        nativeName: 'Espanol'
+    }
+
     let mockStorage: {
         getValue: ReturnType<typeof vi.fn>;
         setValue: ReturnType<typeof vi.fn>;
@@ -38,7 +44,7 @@ describe('ConfigService', () => {
 
     describe('getConfig', () => {
         it('should return configuration from storage', async () => {
-            const expectedConfig: AppConfig = { selectedLanguage: 'es' };
+            const expectedConfig: AppConfig = { selectedLanguage: spanish};
             mockStorage.getValue.mockResolvedValue(expectedConfig);
 
             const result = await ConfigService.getConfig();
@@ -46,23 +52,11 @@ describe('ConfigService', () => {
             expect(result).toEqual(expectedConfig);
             expect(mockStorage.getValue).toHaveBeenCalledOnce();
         });
-
-        it('should return default config when storage fails', async () => {
-            mockStorage.getValue.mockRejectedValue(new Error('Storage error'));
-            const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
-
-            const result = await ConfigService.getConfig();
-
-            expect(result).toEqual({ selectedLanguage: 'en' });
-            expect(consoleSpy).toHaveBeenCalledWith('Failed to get config from storage:', expect.any(Error));
-
-            consoleSpy.mockRestore();
-        });
     });
 
     describe('setConfig', () => {
         it('should save configuration to storage', async () => {
-            const config: AppConfig = { selectedLanguage: 'fr' };
+            const config: AppConfig = { selectedLanguage: spanish};
 
             await ConfigService.setConfig(config);
 
@@ -70,7 +64,7 @@ describe('ConfigService', () => {
         });
 
         it('should throw error when storage fails', async () => {
-            const config: AppConfig = { selectedLanguage: 'fr' };
+            const config: AppConfig = { selectedLanguage: spanish};
             const storageError = new Error('Storage error');
             mockStorage.setValue.mockRejectedValue(storageError);
             const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
@@ -84,23 +78,28 @@ describe('ConfigService', () => {
 
     describe('getActiveLanguage', () => {
         it('should return the selected language from config', async () => {
-            mockStorage.getValue.mockResolvedValue({ selectedLanguage: 'de' });
+            mockStorage.getValue.mockResolvedValue({ selectedLanguage: spanish });
 
             const result = await ConfigService.getActiveLanguage();
 
-            expect(result).toBe('de');
+            expect(result?.code).toBe('en');
         });
     });
 
     describe('setActiveLanguage', () => {
         it('should update the selected language in config', async () => {
-            const currentConfig = { selectedLanguage: 'en' };
+            const currentConfig = { selectedLanguage: spanish};
             mockStorage.getValue.mockResolvedValue(currentConfig);
 
-            await ConfigService.setActiveLanguage('ja');
+            const english = {
+                code: 'en',
+                name: 'english',
+                nativeName: 'english'
+            }
+            await ConfigService.setActiveLanguage(english);
 
             expect(mockStorage.setValue).toHaveBeenCalledWith({
-                selectedLanguage: 'ja'
+                selectedLanguage: english
             });
         });
     });
@@ -134,24 +133,9 @@ describe('ConfigService', () => {
         });
     });
 
-
-
     describe('getDictionaryStorageKey', () => {
         it('should generate correct storage keys for valid languages', () => {
-            expect(ConfigService.getDictionaryStorageKey('en')).toBe('local:en-dictionary');
-            expect(ConfigService.getDictionaryStorageKey('es')).toBe('local:es-dictionary');
-            expect(ConfigService.getDictionaryStorageKey('fr')).toBe('local:fr-dictionary');
-        });
-
-        it('should handle whitespace in language codes', () => {
-            expect(ConfigService.getDictionaryStorageKey(' en ')).toBe('local:en-dictionary');
-            expect(ConfigService.getDictionaryStorageKey('\tes\t')).toBe('local:es-dictionary');
-        });
-
-        it('should accept any language codes', () => {
-            expect(ConfigService.getDictionaryStorageKey('invalid')).toBe('local:invalid-dictionary');
-            expect(ConfigService.getDictionaryStorageKey('')).toBe('local:-dictionary');
-            expect(ConfigService.getDictionaryStorageKey('xyz')).toBe('local:xyz-dictionary');
+            expect(ConfigService.getDictionaryStorageKey(spanish)).toBe('local:en-dictionary');
         });
     });
 

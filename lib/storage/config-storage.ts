@@ -1,44 +1,24 @@
 import { storage } from '#imports';
 import ISO6391, { LanguageCode } from 'iso-639-1';
 
-/**
- * Language interface for language metadata
- */
 export interface Language {
     code: string;           // ISO language code (e.g., 'en', 'zh', 'es')
     name: string;           // Display name (e.g., 'English', 'Chinese', 'Spanish')
     nativeName: string;     // Native language name
 }
 
-/**
- * Application configuration interface
- */
 export interface AppConfig {
-    selectedLanguage: string;  // Language code (e.g., 'en', 'es', 'zh')
+    selectedLanguage?: Language;
 }
 
-/**
- * Default configuration values
- */
-const DEFAULT_CONFIG: AppConfig = {
-    selectedLanguage: 'en'
-};
+const DEFAULT_CONFIG: AppConfig = {};
 
-/**
- * Define storage item for application configuration
- */
 export const configStorage = storage.defineItem<AppConfig>('local:config', {
     defaultValue: DEFAULT_CONFIG,
 });
 
-/**
- * Configuration service for managing application settings
- */
 export class ConfigService {
 
-    /**
-     * Get the current application configuration
-     */
     static async getConfig(): Promise<AppConfig> {
         try {
             return await configStorage.getValue();
@@ -48,9 +28,6 @@ export class ConfigService {
         }
     }
 
-    /**
-     * Set the application configuration
-     */
     static async setConfig(config: AppConfig): Promise<void> {
         try {
             await configStorage.setValue(config);
@@ -60,22 +37,16 @@ export class ConfigService {
         }
     }
 
-    /**
-     * Get the currently active language code
-     */
-    static async getActiveLanguage(): Promise<string> {
+    static async getActiveLanguage() {
         const config = await this.getConfig();
         return config.selectedLanguage;
     }
 
-    /**
-     * Set the active language
-     */
-    static async setActiveLanguage(languageCode: string): Promise<void> {
+    static async setActiveLanguage(language: Language): Promise<void> {
         const config = await this.getConfig();
         await this.setConfig({
             ...config,
-            selectedLanguage: languageCode
+            selectedLanguage: language
         });
     }
 
@@ -110,18 +81,10 @@ export class ConfigService {
         return iso6391
     }
 
-    /**
-     * Generate storage key for language-specific dictionary
-     */
-    static getDictionaryStorageKey(languageCode: string): string {
-        return `local:${languageCode.trim()}-dictionary`;
+    static getDictionaryStorageKey(language: Language): string {
+        return `local:${language.code}-dictionary`;
     }
 
-
-
-    /**
-     * Watch for changes to configuration
-     */
     static watchConfig(callback: (newValue: AppConfig, oldValue: AppConfig) => void) {
         return configStorage.watch(callback);
     }

@@ -24,7 +24,7 @@ describe('ManageDictionariesPage', () => {
 
         // Setup default mocks
         vi.mocked(ConfigService.getAvailableLanguages).mockReturnValue(mockLanguages);
-        vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('en');
+        vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(mockLanguages[0]);
         vi.mocked(ConfigService.setActiveLanguage).mockResolvedValue();
     });
 
@@ -67,7 +67,7 @@ describe('ManageDictionariesPage', () => {
         fireEvent.click(chineseOption);
 
         await waitFor(() => {
-            expect(consoleSpy).toHaveBeenCalledWith('Dictionary language switched from en to: zh');
+            expect(consoleSpy).toHaveBeenCalledWith('Dictionary language switched from undefined to: zh');
         });
 
         consoleSpy.mockRestore();

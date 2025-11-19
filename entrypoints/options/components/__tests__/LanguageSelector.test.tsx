@@ -53,7 +53,7 @@ describe('LanguageSelector', () => {
         render(
             <LanguageSelector
                 onLanguageSelect={mockOnLanguageSelect}
-                selectedLanguage="es"
+                selectedLanguage={mockLanguages[1]}
             />
         );
 
@@ -141,7 +141,7 @@ describe('LanguageSelector', () => {
             fireEvent.click(spanishOption);
         });
 
-        expect(mockOnLanguageSelect).toHaveBeenCalledWith('es');
+        expect(mockOnLanguageSelect).toHaveBeenCalledWith(mockLanguages[1]);
     });
 
     it('supports keyboard navigation with arrow keys', async () => {
@@ -179,7 +179,7 @@ describe('LanguageSelector', () => {
         // Press Enter to select
         fireEvent.keyDown(input, { key: 'Enter' });
 
-        expect(mockOnLanguageSelect).toHaveBeenCalledWith('en');
+        expect(mockOnLanguageSelect).toHaveBeenCalledWith(mockLanguages[0]);
     });
 
     it('closes dropdown with Escape key', async () => {
@@ -221,7 +221,7 @@ describe('LanguageSelector', () => {
         render(
             <LanguageSelector
                 onLanguageSelect={mockOnLanguageSelect}
-                selectedLanguage="es"
+                selectedLanguage={mockLanguages[1]}
             />
         );
 

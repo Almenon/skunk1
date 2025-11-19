@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { ConfigService } from '../../../lib/storage/config-storage';
+import { ConfigService, Language } from '../../../lib/storage/config-storage';
 import LanguageSelector from './LanguageSelector';
 
 interface LanguageSwitcherProps {
-    onLanguageChange?: (language: string) => void;
+    onLanguageChange?: (language: Language) => void;
 }
 
 export function LanguageSwitcher({ onLanguageChange }: LanguageSwitcherProps) {
-    const [currentLanguage, setCurrentLanguage] = useState<string>('en');
+    const [currentLanguage, setCurrentLanguage] = useState<Language>();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +31,7 @@ export function LanguageSwitcher({ onLanguageChange }: LanguageSwitcherProps) {
         loadLanguageData();
     }, []);
 
-    const handleLanguageChange = async (newLanguage: string) => {
+    const handleLanguageChange = async (newLanguage: Language) => {
         try {
             setError(null);
 

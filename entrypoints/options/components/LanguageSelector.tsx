@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+
 import { ConfigService, type Language } from '../../../lib/storage';
 import './LanguageSelector.css';
 
 interface LanguageSelectorProps {
-    onLanguageSelect: (languageCode: string) => void;
-    selectedLanguage?: string;
+    onLanguageSelect: (language: Language) => void;
+    selectedLanguage?: Language;
     placeholder?: string;
     disabled?: boolean;
 }
@@ -42,9 +43,9 @@ export default function LanguageSelector({
 
     // Get display value for selected language
     const getDisplayValue = () => {
-        if (selectedLanguage?.trim()) {
-            const language = availableLanguages.find(lang => lang.code === selectedLanguage);
-            return language ? `${language.name} (${language.nativeName})` : selectedLanguage;
+        if (selectedLanguage) {
+            const language = selectedLanguage;
+            return `${language.name} (${language.nativeName})`;
         }
         return '';
     };
@@ -67,8 +68,8 @@ export default function LanguageSelector({
         }, 150);
     };
 
-    const handleLanguageSelect = (languageCode: string) => {
-        onLanguageSelect(languageCode);
+    const handleLanguageSelect = (language: Language) => {
+        onLanguageSelect(language);
         setIsOpen(false);
         setSearchTerm('');
         inputRef.current?.blur();
@@ -99,7 +100,7 @@ export default function LanguageSelector({
             case 'Enter':
                 e.preventDefault();
                 if (highlightedIndex >= 0 && highlightedIndex < filteredLanguages.length) {
-                    handleLanguageSelect(filteredLanguages[highlightedIndex].code);
+                    handleLanguageSelect(filteredLanguages[highlightedIndex]);
                 }
                 break;
             case 'Escape':
@@ -161,10 +162,10 @@ export default function LanguageSelector({
                             <div
                                 key={language.code}
                                 role="option"
-                                aria-selected={language.code === selectedLanguage}
-                                className={`language-option ${index === highlightedIndex ? 'highlighted' : ''} ${language.code === selectedLanguage ? 'selected' : ''
+                                aria-selected={language.code === selectedLanguage?.code}
+                                className={`language-option ${index === highlightedIndex ? 'highlighted' : ''} ${language.code === selectedLanguage?.code ? 'selected' : ''
                                     }`}
-                                onClick={() => handleLanguageSelect(language.code)}
+                                onClick={() => handleLanguageSelect(language)}
                             >
                                 <div className="language-option-main">
                                     <span className="language-name">{language.name}</span>

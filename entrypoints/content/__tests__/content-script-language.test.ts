@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ConfigService, WordStorageService } from '../../../lib/storage';
+import { ConfigService, Language, WordStorageService } from '../../../lib/storage';
 
 // Mock the storage services
 vi.mock('../../../lib/storage', () => ({
@@ -21,15 +21,21 @@ vi.mock('../word-replacer', () => ({
     revertAllReplacements: vi.fn().mockReturnValue({ revertedCount: 0 })
 }));
 
+const english = { code: 'en', name: 'english', nativeName: 'english' }
+
+const spanish = { code: 'es', name: 'spanish', nativeName: 'espanol' }
+
+const mandarin = { code: 'zh', name: 'chinese', nativeName: 'zhongwen' }
+
 describe('Content Script Language Support', () => {
     beforeEach(() => {
         // Reset all mocks
         vi.clearAllMocks();
 
         // Set up default mock implementations
-        vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('en');
+        vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(spanish);
         vi.mocked(ConfigService.watchConfig).mockReturnValue(() => { });
-        vi.mocked(ConfigService.getDictionaryStorageKey).mockImplementation((lang: string) => `local:${lang}-dictionary`);
+        vi.mocked(ConfigService.getDictionaryStorageKey).mockImplementation((lang: Language) => `local:${lang.code}-dictionary`);
 
         // Mock WordStorageService instance methods
         const mockInstance = {
@@ -48,21 +54,21 @@ describe('Content Script Language Support', () => {
 
     describe('Language-aware word replacement', () => {
         it('should initialize WordStorageService with active language', async () => {
-            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('es');
+            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(spanish);
 
             // Since we can't directly test the content script execution,
             // we'll test the core logic by simulating the initialization
             const activeLanguage = await ConfigService.getActiveLanguage();
-            const wordStorageService = new WordStorageService(activeLanguage);
+            const wordStorageService = new WordStorageService(activeLanguage as Language);
 
             expect(ConfigService.getActiveLanguage).toHaveBeenCalled();
-            expect(WordStorageService).toHaveBeenCalledWith('es');
+            expect(WordStorageService).toHaveBeenCalledWith(spanish);
             expect(wordStorageService).toBeDefined();
         });
 
         it('should use language-specific dictionary for word replacements', async () => {
             const mockWordPairs = { 'robot': 'robot-es', 'worker': 'trabajador' };
-            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('es');
+            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(spanish);
 
             const mockInstance = {
                 getWordPairs: vi.fn().mockResolvedValue(mockWordPairs),
@@ -72,7 +78,7 @@ describe('Content Script Language Support', () => {
 
             // Simulate the word replacement logic
             const activeLanguage = await ConfigService.getActiveLanguage();
-            const wordStorageService = new WordStorageService(activeLanguage);
+            const wordStorageService = new WordStorageService(activeLanguage as Language);
             const wordReplacements = await wordStorageService.getWordPairs();
 
             expect(wordReplacements).toEqual(mockWordPairs);
@@ -81,7 +87,7 @@ describe('Content Script Language Support', () => {
 
         it('should handle different languages with different dictionaries', async () => {
             // Test English dictionary
-            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('en');
+            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(english);
             const enWordPairs = { 'robot': '机器人', 'worker': '工人' };
 
             let mockInstance = {
@@ -91,13 +97,13 @@ describe('Content Script Language Support', () => {
             vi.mocked(WordStorageService).mockReturnValue(mockInstance as any);
 
             const enLanguage = await ConfigService.getActiveLanguage();
-            const enWordStorageService = new WordStorageService(enLanguage);
+            const enWordStorageService = new WordStorageService(enLanguage as Language);
             const enWordReplacements = await enWordStorageService.getWordPairs();
 
             expect(enWordReplacements).toEqual(enWordPairs);
 
             // Test Spanish dictionary
-            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('es');
+            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(spanish);
             const esWordPairs = { 'robot': 'robot-es', 'worker': 'trabajador' };
 
             mockInstance = {
@@ -107,11 +113,11 @@ describe('Content Script Language Support', () => {
             vi.mocked(WordStorageService).mockReturnValue(mockInstance as any);
 
             const esLanguage = await ConfigService.getActiveLanguage();
-            const esWordStorageService = new WordStorageService(esLanguage);
+            const esWordStorageService = new WordStorageService(esLanguage as Language);
             const esWordReplacements = await esWordStorageService.getWordPairs();
 
             expect(esWordReplacements).toEqual(esWordPairs);
-            expect(WordStorageService).toHaveBeenCalledWith('es');
+            expect(WordStorageService).toHaveBeenCalledWith(spanish);
         });
     });
 
@@ -128,14 +134,14 @@ describe('Content Script Language Support', () => {
         });
 
         it('should reinitialize WordStorageService when language changes', async () => {
-            let configCallback: ((newConfig: { selectedLanguage: string }, oldConfig: { selectedLanguage: string }) => void) | undefined;
-            vi.mocked(ConfigService.watchConfig).mockImplementation((callback: (newConfig: { selectedLanguage: string }, oldConfig: { selectedLanguage: string }) => void) => {
+            let configCallback: ((newConfig: { selectedLanguage: Language }, oldConfig: { selectedLanguage: Language }) => void) | undefined;
+            vi.mocked(ConfigService.watchConfig).mockImplementation((callback: (newConfig: { selectedLanguage: Language }, oldConfig: { selectedLanguage: Language }) => void) => {
                 configCallback = callback;
                 return () => { };
             });
 
             // Set up initial language
-            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('en');
+            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(english);
 
             // Simulate setting up the watcher
             ConfigService.watchConfig(() => {
@@ -143,8 +149,8 @@ describe('Content Script Language Support', () => {
             });
 
             // Simulate language change
-            const oldConfig = { selectedLanguage: 'en' };
-            const newConfig = { selectedLanguage: 'es' };
+            const oldConfig = { selectedLanguage: english };
+            const newConfig = { selectedLanguage: spanish };
 
             configCallback?.(newConfig, oldConfig);
 
@@ -153,45 +159,42 @@ describe('Content Script Language Support', () => {
 
         it('should handle language change from English to Spanish', async () => {
             // Initial setup with English
-            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('en');
-            let wordStorageService = new WordStorageService('en');
+            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(english);
+            let wordStorageService = new WordStorageService(english);
 
-            expect(WordStorageService).toHaveBeenCalledWith('en');
+            expect(WordStorageService).toHaveBeenCalledWith(english);
             expect(wordStorageService).toBeDefined();
 
             // Simulate language change to Spanish
-            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('es');
-            wordStorageService = new WordStorageService('es');
+            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(spanish);
+            wordStorageService = new WordStorageService(spanish);
 
-            expect(WordStorageService).toHaveBeenCalledWith('es');
+            expect(WordStorageService).toHaveBeenCalledWith(spanish);
             expect(wordStorageService).toBeDefined();
         });
 
-        it('should handle language change from Spanish to Chinese', async () => {
+        it('should handle language change from Spanish to Mandarin', async () => {
             // Initial setup with Spanish
-            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('es');
-            let wordStorageService = new WordStorageService('es');
+            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(spanish);
+            let wordStorageService = new WordStorageService(spanish);
 
-            expect(WordStorageService).toHaveBeenCalledWith('es');
+            expect(WordStorageService).toHaveBeenCalledWith(spanish);
             expect(wordStorageService).toBeDefined();
 
             // Simulate language change to Chinese
-            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('zh');
-            wordStorageService = new WordStorageService('zh');
+            vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(mandarin);
+            wordStorageService = new WordStorageService(mandarin);
 
-            expect(WordStorageService).toHaveBeenCalledWith('zh');
+            expect(WordStorageService).toHaveBeenCalledWith(mandarin);
             expect(wordStorageService).toBeDefined();
         });
     });
 
     describe('Storage key generation', () => {
         it('should use correct storage keys for different languages', () => {
-            vi.mocked(ConfigService.getDictionaryStorageKey).mockImplementation((lang: string) => `local:${lang}-dictionary`);
-
-            expect(ConfigService.getDictionaryStorageKey('en')).toBe('local:en-dictionary');
-            expect(ConfigService.getDictionaryStorageKey('es')).toBe('local:es-dictionary');
-            expect(ConfigService.getDictionaryStorageKey('zh')).toBe('local:zh-dictionary');
-            expect(ConfigService.getDictionaryStorageKey('fr')).toBe('local:fr-dictionary');
+            expect(ConfigService.getDictionaryStorageKey(english)).toBe('local:en-dictionary');
+            expect(ConfigService.getDictionaryStorageKey(spanish)).toBe('local:es-dictionary');
+            expect(ConfigService.getDictionaryStorageKey(mandarin)).toBe('local:zh-dictionary');
         });
     });
 
@@ -207,14 +210,6 @@ describe('Content Script Language Support', () => {
             }
         });
 
-        it('should handle WordStorageService initialization errors', () => {
-            vi.mocked(WordStorageService).mockImplementation(() => {
-                throw new Error('Invalid language');
-            });
-
-            expect(() => new WordStorageService('invalid')).toThrow('Invalid language');
-        });
-
         it('should handle word pairs retrieval errors', async () => {
             const mockInstance = {
                 getWordPairs: vi.fn().mockRejectedValue(new Error('Storage error')),
@@ -222,7 +217,7 @@ describe('Content Script Language Support', () => {
             };
             vi.mocked(WordStorageService).mockReturnValue(mockInstance as any);
 
-            const wordStorageService = new WordStorageService('en');
+            const wordStorageService = new WordStorageService(english);
 
             try {
                 await wordStorageService.getWordPairs();

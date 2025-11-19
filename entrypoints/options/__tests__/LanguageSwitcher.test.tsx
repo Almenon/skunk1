@@ -25,7 +25,7 @@ describe('LanguageSwitcher', () => {
 
         // Setup default mocks
         vi.mocked(ConfigService.getAvailableLanguages).mockReturnValue(mockLanguages);
-        vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('en');
+        vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(mockLanguages[0]);
         vi.mocked(ConfigService.setActiveLanguage).mockResolvedValue();
     });
 
@@ -92,10 +92,10 @@ describe('LanguageSwitcher', () => {
         fireEvent.click(spanishOption);
 
         await waitFor(() => {
-            expect(ConfigService.setActiveLanguage).toHaveBeenCalledWith('es');
+            expect(ConfigService.setActiveLanguage).toHaveBeenCalledWith(mockLanguages[1]);
         });
 
-        expect(mockOnLanguageChange).toHaveBeenCalledWith('es');
+        expect(mockOnLanguageChange).toHaveBeenCalledWith(mockLanguages[1]);
     });
 
     it('should display error when language loading fails', async () => {

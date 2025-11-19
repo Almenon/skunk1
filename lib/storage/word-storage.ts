@@ -1,5 +1,5 @@
 import { storage } from '#imports';
-import { ConfigService } from './config-storage';
+import { ConfigService, Language } from './config-storage';
 import { sanitizeWord, validateWordPair, validateWordReplacements } from './validation';
 
 export interface WordReplacements {
@@ -17,7 +17,7 @@ export class WordStorageService {
    * Create a WordStorageService instance for a specific language
    * @param language - Language code (e.g., 'en', 'es', 'fr')
    */
-  constructor(private language: string) {
+  constructor(private language: Language) {
     const storageKey = ConfigService.getDictionaryStorageKey(language) as `local:${string}`;
     this.storageItem = storage.defineItem<WordReplacements>(storageKey, {
       defaultValue: {},
@@ -112,10 +112,7 @@ export class WordStorageService {
     });
   }
 
-  /**
-   * Get the language code for this service instance
-   */
-  getLanguage(): string {
+  getLanguage(): Language {
     return this.language;
   }
 }

@@ -1,6 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import ISO6391 from 'iso-639-1';
+
 import { ConfigService } from '../../../lib/storage';
 import TutorialPage1 from '../components/TutorialPage1';
 
@@ -9,12 +11,7 @@ vi.mock('../../../lib/storage', () => ({
     ConfigService: {
         getActiveLanguage: vi.fn(),
         setActiveLanguage: vi.fn(),
-        getAvailableLanguages: vi.fn(() => [
-            { code: 'en', name: 'English', nativeName: 'English' },
-            { code: 'es', name: 'Spanish', nativeName: 'Español' },
-            { code: 'zh', name: 'Chinese', nativeName: '中文' },
-            { code: 'fr', name: 'French', nativeName: 'Français' }
-        ])
+        getAvailableLanguages: vi.fn(() => ISO6391.getLanguages(['en', 'es', 'zh', 'fr']))
     }
 }));
 
@@ -26,7 +23,7 @@ describe('Tutorial Language Flow Integration Tests', () => {
         vi.clearAllMocks();
         mockOnLanguageSelected.mockClear();
         // Default mock implementation
-        vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue('en');
+        vi.mocked(ConfigService.getActiveLanguage).mockResolvedValue(ISO6391.getLanguages(['en'])[0]);
         vi.mocked(ConfigService.setActiveLanguage).mockResolvedValue();
     });
 
@@ -94,17 +91,14 @@ describe('Tutorial Language Flow Integration Tests', () => {
         const spanishOption = screen.getByText('Spanish');
         await user.click(spanishOption);
 
-        // Should call setActiveLanguage with 'es'
         await waitFor(() => {
-            expect(ConfigService.setActiveLanguage).toHaveBeenCalledWith('es');
+            expect(ConfigService.setActiveLanguage).toHaveBeenCalledWith(ISO6391.getLanguages(['es'])[0]);
         });
 
-        // Should call onLanguageSelected with true
         await waitFor(() => {
             expect(mockOnLanguageSelected).toHaveBeenCalledWith(true);
         });
 
-        // Should show confirmation message
         await waitFor(() => {
             expect(screen.getByText('Spanish')).toBeInTheDocument();
             expect(screen.getByText(/Great! You've selected/)).toBeInTheDocument();

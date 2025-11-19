@@ -1,4 +1,4 @@
-import { ConfigService, WordStorageService } from '../../lib/storage';
+import { ConfigService, Language, WordStorageService } from '../../lib/storage';
 import WordReplacer from './word-replacer';
 
 export default defineContentScript({
@@ -8,11 +8,16 @@ export default defineContentScript({
     const ITERATION_MAX = 30000; // arbitrary, I just want to at least cover first page
 
     let currentWordStorageService: WordStorageService | null = null;
-    let currentLanguage: string;
-    const wordReplacer = new WordReplacer("")
+    let currentLanguage: Language;
+    const wordReplacer = new WordReplacer({
+      name: '',
+      nativeName: '',
+      code: '',
+    })
 
     async function initializeWordStorageService() {
-      currentLanguage = await ConfigService.getActiveLanguage();
+      currentLanguage = await ConfigService.getActiveLanguage() as Language;
+      if(!currentLanguage) throw new Error("no active language")
       currentWordStorageService = new WordStorageService(currentLanguage);
       console.log(`Initialized word storage service for language: ${currentLanguage}`);
     }
@@ -31,7 +36,7 @@ export default defineContentScript({
       }
 
       const startTime = performance.now();
-      wordReplacer.languageCode = currentLanguage
+      wordReplacer.language = currentLanguage
       const result = wordReplacer.scanAndReplaceWords(body, wordReplacements, ITERATION_MAX);
       console.log(`Word replacement completed: ${result.matchCount} matches found in ${performance.now() - startTime}ms for language: ${currentLanguage}`);
     }

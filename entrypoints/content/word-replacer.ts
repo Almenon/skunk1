@@ -1,3 +1,4 @@
+import { Language } from "@/lib/storage";
 import { createReplacementElement } from "./replacementElement";
 
 export interface ReplacementTargets {
@@ -36,7 +37,7 @@ export default class WordReplacer{
 
   private activeReplacements: ReplacementRecord[] = [];
 
-  constructor(public languageCode: string){}
+  constructor(public language: Language){}
 
 
   /**
@@ -108,7 +109,7 @@ export default class WordReplacer{
         let newNode: Node;
         if (part instanceof ReplacementObject) {
           console.log(`replacing ${part.match[0]} with ${part.replacementValue}. At:`, parent)
-          const replacementElement = createReplacementElement(part, this.languageCode);
+          const replacementElement = createReplacementElement(part, this.language);
           newNode = replacementElement;
 
           // Track this replacement for potential reversal

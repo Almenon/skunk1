@@ -1,21 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
-import ISO6391 from 'iso-639-1';
 
-import { ConfigService, WordStorageService } from '../../../lib/storage';
+import { ConfigService, Language, WordStorageService } from '../../../lib/storage';
 import WordReplacer from '../../content/word-replacer';
 import AddWordForm from '../../options/components/AddWordForm';
 import './TutorialPage2.css';
 
 export default function TutorialPage2() {
     const [demoWords, setDemoWords] = useState<{ [key: string]: string }>({});
-    const [selectedLanguageName, setSelectedLanguageName] = useState<string>('Chinese');
+    const [selectedLanguage, setSelectedLanguage] = useState<Language>();
     const demoTextRef = useRef<HTMLDivElement>(null);
 
     // Load the selected language name
     useEffect(() => {
         const loadLanguageName = async () => {
-            const languageCode = await ConfigService.getActiveLanguage();
-            setSelectedLanguageName(ISO6391.getName(languageCode))
+            const language = await ConfigService.getActiveLanguage();
+            setSelectedLanguage(language)
         };
 
         loadLanguageName();
@@ -23,7 +22,8 @@ export default function TutorialPage2() {
 
     const handleAddWord = async (original: string, replacement: string) => {
         try {
-            const w = new WordStorageService(ISO6391.getCode(selectedLanguageName))
+            if(!selectedLanguage) throw new Error("no language set")
+            const w = new WordStorageService(selectedLanguage)
             await w.addWordPair(original, replacement);
 
             const newWords = { ...demoWords, [original]: replacement };
@@ -36,7 +36,7 @@ export default function TutorialPage2() {
 
                 // Get all word pairs from storage and apply them
                 const allWordPairs = await w.getWordPairs();
-                const wordReplacer = new WordReplacer(ISO6391.getCode(selectedLanguageName))
+                const wordReplacer = new WordReplacer(selectedLanguage)
                 wordReplacer.scanAndReplaceWords(demoTextRef.current, allWordPairs);
             }
         } catch (error) {
@@ -53,7 +53,7 @@ export default function TutorialPage2() {
             <div className="tutorial-step">
                 <h2 className="step-header">
                     <span className="step-number">1</span>
-                    <span className="step-text">Add the English and {selectedLanguageName} words you want to practice.</span>
+                    <span className="step-text">Add the English and {selectedLanguage?.name} words you want to practice.</span>
                 </h2>
             </div>
 
@@ -65,7 +65,7 @@ export default function TutorialPage2() {
             <div className="tutorial-step">
                 <h2 className="step-header">
                     <span className="step-number">2</span>
-                    <span className="step-text">As you browse the web, your chosen words will appear in {selectedLanguageName}.</span>
+                    <span className="step-text">As you browse the web, your chosen words will appear in {selectedLanguage?.name}.</span>
                 </h2>
             </div>
 

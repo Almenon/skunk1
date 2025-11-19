@@ -6,7 +6,11 @@ import WordReplacer, {
 } from '../word-replacer';
 
 describe('word-replacer', () => {
-  const w = new WordReplacer("zh")
+  const w = new WordReplacer({
+    code: 'es',
+    name: 'spanish',
+    nativeName: 'espanol'
+  })
 
   const replacementTargets: ReplacementTargets = {
     'robot': '机器人',

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import ISO6391 from 'iso-639-1';
 
-import { ConfigService } from '../../../lib/storage';
+import { ConfigService, Language } from '../../../lib/storage';
 import LanguageSelector from '../../options/components/LanguageSelector';
 import './TutorialPage1.css';
 
@@ -10,7 +9,7 @@ interface TutorialPage1Props {
 }
 
 export default function TutorialPage1({ onLanguageSelected }: TutorialPage1Props) {
-    const [selectedLanguage, setSelectedLanguage] = useState<string>('');
+    const [selectedLanguage, setSelectedLanguage] = useState<Language>();
     const [isLoading, setIsLoading] = useState(true);
 
     // Start with no language selected for tutorial
@@ -19,10 +18,10 @@ export default function TutorialPage1({ onLanguageSelected }: TutorialPage1Props
         onLanguageSelected(false);
     }, [onLanguageSelected]);
 
-    const handleLanguageSelect = async (languageCode: string) => {
+    const handleLanguageSelect = async (language: Language) => {
         try {
-            await ConfigService.setActiveLanguage(languageCode);
-            setSelectedLanguage(languageCode);
+            await ConfigService.setActiveLanguage(language);
+            setSelectedLanguage(language);
             onLanguageSelected(true);
         } catch (error) {
             console.error('Failed to set active language:', error);
@@ -61,7 +60,7 @@ export default function TutorialPage1({ onLanguageSelected }: TutorialPage1Props
                 <div className="selected-language-info">
                     <p className="confirmation-text">
                         Great! You've selected <strong>
-                            {ISO6391.getName(selectedLanguage)}
+                            {selectedLanguage.name}
                         </strong> as your dictionary language.
                     </p>
                     <p className="next-step-hint">
