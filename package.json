@@ -2,7 +2,7 @@
   "name": "skunk1",
   "description": "A extension to help you learning foreign languages as you browse the web",
   "private": true,
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "scripts": {
     "dev": "wxt",
